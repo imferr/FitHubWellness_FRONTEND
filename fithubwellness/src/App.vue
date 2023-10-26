@@ -1,26 +1,24 @@
 <template>
-  <img alt="Vue logo" src="./assets/logo.png">
-  <HelloWorld msg="Welcome to Your Vue.js App"/>
+  <div>
+    <p>Hola</p>
+    <button @click="login">Login</button>
+  </div>
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld.vue'
+
+import { useAuth0 } from '@auth0/auth0-vue';
 
 export default {
-  name: 'App',
-  components: {
-    HelloWorld
+  setup() {
+    const { loginWithPopup } = useAuth0();
+
+    return {
+      login: () => {
+        loginWithPopup();
+      }
+    }
   }
 }
-</script>
 
-<style>
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
-}
-</style>
+</script>
