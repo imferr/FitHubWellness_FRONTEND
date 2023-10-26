@@ -1,31 +1,35 @@
 <template>
-    <div>
-        <button @click="login">Login</button>
+    <div class="login">
+        <div v-if="isAuthenticated">
+            <HomePage />
+            <button @click="logout">Cerrar sesión</button>
+        </div>
+        <div v-else>
+            <button @click="login">Iniciar sesión</button>
+        </div>
     </div>
 </template>
-  
+
 <script>
 import { useAuth0 } from '@auth0/auth0-vue';
-import { useRouter } from 'vue-router';
+import HomePage from './HomePage.vue';
 
 export default {
-    setup() {
-        const { loginWithRedirect, isAuthenticated } = useAuth0();
-        const router = useRouter();
-
-        const login = () => {
-            loginWithRedirect();
-        };
-
-        if (isAuthenticated) {
-            router.push({ name: 'home' });
-        }
-
-        return {
-            login,
-            isAuthenticated,
-        };
+    components: {
+        HomePage
     },
+    setup() {
+        const { loginWithRedirect, isAuthenticated, logout } = useAuth0();
+        
+        return {
+            login: () => {
+                loginWithRedirect();
+            },
+            logout: () => {
+                logout();
+            },
+            isAuthenticated
+        };
+    }
 };
 </script>
-  
