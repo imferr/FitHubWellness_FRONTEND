@@ -8,16 +8,16 @@
             </div>
             <div class="info-section">
                 <div class="input-group">
+                    <label>Nickname:</label>
+                    <input type="text" readonly v-model="user.nickname" />
+                </div>
+                <div class="input-group">
                     <label>Nombre del usuario:</label>
                     <input type="text" readonly v-model="user.name" />
                 </div>
                 <div class="input-group">
                     <label>Correo del usuario:</label>
                     <input type="email" readonly v-model="user.email" />
-                </div>
-                <div class="input-group">
-                    <label>Fecha de nacimiento del usuario:</label>
-                    <input type="date" readonly v-model="user.birthdate" />
                 </div>
                 <button class="volver-button"><a href="/">VOLVER</a></button>
             </div>
@@ -47,18 +47,14 @@ export default {
 </script>
   
 <style>
+
 .profile-container {
     font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
     width: 80%;
     margin: 50px auto;
     padding: 20px;
     box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.1);
-}
-
-@media screen and (min-width: 800px) {
-    .profile-container {
-        width: 50%;
-    }
+    border-radius: 20px;
 }
 
 .profile-container h1 {
@@ -79,7 +75,9 @@ export default {
 }
 
 .image-section img {
-    width: 100%;
+    width: 70vw;
+    max-width: 300px;
+    min-width: 150px;
     height: auto;
     border-radius: 50%;
     border: 1px solid #ccc;
@@ -134,6 +132,30 @@ export default {
 .volver-button:hover a {
     color: black;
     text-decoration: none;
+}
+
+@media screen and (min-width: 500px) {
+    .profile-container {
+        width: 50%;
+    }
+}
+
+@media screen and (max-width: 799px) {
+    .profile-content {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .image-section {
+        order: 1;
+        margin-bottom: 20px;
+        width: 100%;
+    }
+
+    .info-section {
+        order: 2;
+        width: 100%;
+    }
 }
 </style>
   
