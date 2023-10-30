@@ -2,37 +2,48 @@
   <div class="navbar-login">
     <div class="navbar-logo">
       <img src="../assets/logo.png" alt="logo" />
-      <p>FITHUB WELLNESS<br>Bienvenido/a {{ user.name }}</p>
+      <p>BIENVENIDO A FITHUB WELLNESS</p>
     </div>
     <div class="navbar-links">
-      <a href="/inicio">INICIO</a>
+      <a href="/">INICIO</a>
       <a href="/imc">IMC</a>
       <a href="/mis-rutinas">MIS RUTINAS</a>
       <a href="/perfil">PERFIL</a>
-      <LogoutButton />
+      <div class="dropdown">
+      <img @click="toggleDropdown" :src="user.picture" alt="User" class="user-photo" />
+      <div v-if="showDropdown" class="dropdown-content">
+        <a href="/perfil">Ver Perfil</a>
+        <a @click="logout">Logout</a>
+      </div>
+    </div>
     </div>
   </div>
 </template>
 
 <script>
-
-import LogoutButton from '../buttons/LogoutButton.vue';
 import { useAuth0 } from '@auth0/auth0-vue';
 
 export default {
-  components: {
-    LogoutButton,
+  data() {
+    return {
+      showDropdown: false,
+    };
   },
   setup() {
-    const { isAuthenticated, user } = useAuth0();
+    const { isAuthenticated, user, logout } = useAuth0();
 
     return {
       isAuthenticated,
-      user
+      user,
+      logout
     };
+  },
+  methods: {
+    toggleDropdown() {
+      this.showDropdown = !this.showDropdown;
+    }
   }
 };
-
 </script>
 
 <style>
@@ -67,7 +78,7 @@ export default {
 
 .navbar-links {
   display: flex;
-  justify-content: flex-end;
+  justify-content: space-between;
   align-items: center;
   margin-right: 15px;
 }
@@ -84,4 +95,41 @@ export default {
   transition: 0.5s;
 }
 
+.dropdown {
+  position: relative;
+  display: inline-block;
+}
+
+.user-photo {
+  width: 40px;
+  height: 40px;
+  cursor: pointer;
+  border-radius: 50%;
+  border: 2px solid white;
+}
+
+.dropdown-content {
+  display: none;
+  position: absolute;
+  right: 0;
+  background-color: black;
+  min-width: 160px;
+  box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+  z-index: 1;
+}
+
+.dropdown-content a {
+  color: white;
+  padding: 12px 16px;
+  text-decoration: none;
+  display: block;
+}
+
+.dropdown-content a:hover {
+  background-color: #575757;
+}
+
+.dropdown:hover .dropdown-content {
+  display: block;
+}
 </style>
