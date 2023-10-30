@@ -5,6 +5,7 @@
             <div v-if="user">
                 <h1>Hola {{ user.name }}</h1>
                 <h2>{{ user.email }}</h2>
+                <img :src="user.picture" alt="Profile picture" />
             </div>
             <div v-else>
                 <h1>Hola, bienvenido a FitHub</h1>
