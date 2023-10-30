@@ -1,14 +1,12 @@
-
-import LogoutButton from '@/buttons/LogoutButton.vue';
 <template>
-    <div class="navbar">
-        <div class="navbar__logo">
-            <img src="../assets/logoauth.jpg" alt="logo" />
-        </div>
-        <div class="navbar__links">
-            <LogoutButton />
-        </div>
-    </div>
+  <div class="navbar-login">
+      <div class="navbar__logo">
+          <img src="../assets/logo.png" alt="logo" />
+      </div>
+      <div class="navbar__links">
+          <LogoutButton />
+      </div>
+  </div>
 </template>
 
 <script>
@@ -30,3 +28,22 @@ export default {
 };
 
 </script>
+
+<style>
+
+.navbar-login {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: black;
+    color: white;
+    padding: 10px;
+}
+
+.navbar-login img {
+    width: 60px;
+    height: 60px;
+    margin: 5px;
+}
+
+</style>

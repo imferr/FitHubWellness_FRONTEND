@@ -1,6 +1,6 @@
 <template>
   <div>
-    <button @click="login" class="loginbutton">Iniciar sesión</button>
+    <button @click="login" class="loginbutton">LOG IN</button>
   </div>
 </template>
   
@@ -25,12 +25,21 @@ export default {
 <style>
 
 .loginbutton {
-  background-color: steelblue;
-  color: white;
-  border: none;
-  padding: 10px;
-  border-radius: 10px;
-  margin: 5px;
+    font-weight: bold;
+    background-color: black;
+    border: 2px solid white;
+    color: white;
+    padding: 10px;
+    border-radius: 10px;
+    margin: 5px;
+    cursor: pointer;
+}
+
+.loginbutton:hover {
+    background-color: white;
+    color: black;
+    scale: 1.1;
+    transition: 0.5s;
 }
 
 </style>
