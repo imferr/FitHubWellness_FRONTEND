@@ -1,7 +1,7 @@
 <template>
     <NavBarHome />
     <div class="profile-container">
-        <h1>Mi Perfil</h1>
+        <h1>MI PERFIL</h1>
         <div class="profile-content">
             <div class="image-section">
                 <img :src="user.picture" alt="profile picture" />
@@ -17,7 +17,7 @@
                 </div>
                 <div class="input-group">
                     <label>Fecha de nacimiento del usuario:</label>
-                    <input type="date" readonly v-model="user.birthDate" />
+                    <input type="date" readonly v-model="user.birthdate" />
                 </div>
                 <button class="volver-button"><a href="/">VOLVER</a></button>
             </div>
@@ -96,12 +96,15 @@ export default {
 .info-section label {
     display: block;
     margin-bottom: 10px;
+    font-weight: bold;
 }
 
 .input-group input {
     width: 100%;
     padding: 10px;
     box-sizing: border-box;
+    border-radius: 20px;
+    border: 1px solid #ccc;
 }
 
 .volver-button {
