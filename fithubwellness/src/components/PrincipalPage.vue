@@ -41,6 +41,7 @@ export default {
 <style>
 
 body {
+  background-image: url('../assets/fondo.gif');
   margin: 0;
 }
 </style>

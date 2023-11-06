@@ -48,6 +48,10 @@ export default {
   
 <style>
 
+body {
+    background-image: url('../assets/fondo.gif');
+}
+
 .profile-container {
     font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
     width: 80%;
@@ -55,6 +59,7 @@ export default {
     padding: 20px;
     box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.1);
     border-radius: 20px;
+    background-color: white;
 }
 
 .profile-container h1 {
