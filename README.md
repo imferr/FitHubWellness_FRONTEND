@@ -2,7 +2,6 @@
 
 <div align="center">
   <img src="./fithubwellness/src/assets/logo.png" alt="FitHub Wellness" height="100"/>
-  <img src="https://assets.stickpng.com/images/62a74f5c223343fbc2207d03.png" alt="FitHub Wellness" height="100" margin-left="10"/>
 </div>
 
 ## Descripción General
