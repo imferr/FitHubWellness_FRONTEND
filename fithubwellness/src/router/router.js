@@ -2,6 +2,7 @@ import { createRouter, createWebHistory } from 'vue-router';
 import PrincipalPage from '../components/PrincipalPage.vue';
 import PerfilPage from '../components/PerfilPage.vue';
 import HomePage from '../components/HomePage.vue';
+import IMCPage from '../components/IMCPage.vue';
 
 const routes = [
     {
@@ -18,6 +19,11 @@ const routes = [
         path: '/home',
         name: 'home',
         component: HomePage,
+    },
+    {
+        path: '/imc',
+        name: 'imc',
+        component: IMCPage,
     },
 ];
 
