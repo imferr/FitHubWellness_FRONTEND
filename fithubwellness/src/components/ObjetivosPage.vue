@@ -7,7 +7,7 @@
       <!--Contenido de los objetivos cumplidos-->
       <h3>Objetivos por cumplir</h3>
       <!--Contenido de los objetivos pendientes-->
-      <div class="buttonAdd"><AddButton /></div>
+      <div class="buttonAdd"><a href="/newobjetivo"><AddButton /></a></div>
     </div>
     <div class="objetivos-card">
       <h1>Personal Record</h1>
