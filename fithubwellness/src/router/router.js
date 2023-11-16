@@ -4,6 +4,7 @@ import PerfilPage from '../components/PerfilPage.vue';
 import HomePage from '../components/HomePage.vue';
 import ObjetivosPage from '../components/ObjetivosPage.vue';
 import NewObjetivoPage from '../components/NewObjetivoPage.vue';
+import NewEvaluationPage from '../components/NewEvaluationPage.vue';
 
 const routes = [
     {
@@ -30,6 +31,11 @@ const routes = [
         path: '/newobjetivo',
         name: 'newobjetivo',
         component: NewObjetivoPage,
+    },
+    {
+        path: '/newevaluation',
+        name: 'newevaluation',
+        component: NewEvaluationPage,
     },
 
 ];

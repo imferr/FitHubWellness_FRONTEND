@@ -6,7 +6,7 @@
             <div class="bienvenido">
                 <h1>BIENVENIDO A FITHUB</h1>
                 <div class="bienvenido-evaluacion">
-                    <p>Nueva evaluación</p><AddButton/>
+                    <p>Nueva evaluación</p><router-link to="/newevaluation"><AddButton/></router-link>
                 </div>
             </div>
             <div class="container-home">
