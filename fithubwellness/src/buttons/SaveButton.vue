@@ -1,18 +1,18 @@
 <template>
-    <div class="volver">
-        <button class="volver-button">VOLVER</button>
+    <div class="save">
+        <button class="save-button">GUARDAR</button>
     </div>
 </template>
 
 <style>
 
-.volver {
+.save {
     display: flex;
     justify-content: flex-end;
     align-items: center;
 }
 
-.volver-button {
+.save-button {
     font-weight: bold;
     background-color: black;
     border: 2px solid white;
@@ -23,12 +23,12 @@
     cursor: pointer;
 }
 
-.volver-button a {
+.save-button a {
     color: white;
     text-decoration: none;
 }
 
-.volver-button:hover {
+.save-button:hover {
     border: 2px solid black;
     background-color: white;
     color: black;
@@ -36,7 +36,7 @@
     transition: 0.5s;
 }
 
-.volver-button:hover a {
+.save-button:hover a {
     color: black;
     text-decoration: none;
 }

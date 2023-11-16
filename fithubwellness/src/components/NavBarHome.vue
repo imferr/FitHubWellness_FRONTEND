@@ -6,15 +6,15 @@
     </div>
     <div class="navbar-links">
       <a href="/home">INICIO</a>
-      <a href="/imc">IMC</a>
-      <a href="/mis-rutinas">MIS RUTINAS</a>
+      <a href="/objetivos">OBJETIVOS</a>
+      <a href="/historial">HISTORIAL</a>
       <div class="dropdown">
-      <img @click="toggleDropdown" :src="user.picture" alt="User" class="user-photo" />
-      <div v-if="showDropdown" class="dropdown-content">
-        <a href="/perfil">Ver Perfil</a>
-        <a @click="logout">Logout</a>
+        <img @click="toggleDropdown" :src="user.picture" alt="User" class="user-photo" />
+        <div v-if="showDropdown" class="dropdown-content">
+          <a href="/perfil">Ver Perfil</a>
+          <a @click="logout">Logout</a>
+        </div>
       </div>
-    </div>
     </div>
   </div>
 </template>
