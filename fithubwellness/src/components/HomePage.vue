@@ -6,23 +6,21 @@
             <div class="bienvenido">
                 <h1>BIENVENIDO A FITHUB</h1>
                 <div class="bienvenido-evaluacion">
-                    <p>Nueva evaluación</p><router-link to="/newevaluation"><AddButton/></router-link>
+                    <p>Nueva evaluación</p><router-link to="/newevaluation">
+                        <AddButton />
+                    </router-link>
                 </div>
             </div>
             <div class="container-home">
                 <div class="exercises-left">
                     <h3>¿Qué vas a entrenar hoy?</h3>
-                    <ul>
-                        <li v-for="exercise in exercises" :key="exercise.id">
-                            <h3>{{ exercise.name }}</h3>
-                            <p v-html="exercise.description"></p>
-                            <img :src="exercise.linkPicture" alt="Imagen del ejercicio" />
-                        </li>
+                    <ul v-if="exercises.length">
+                        <li v-for="exercise in exercises" :key="exercise.id">{{ exercise.name }}</li>
                     </ul>
+                    <div v-else>No hay ejercicios disponibles.</div>
                 </div>
                 <div class="chat-right">
                     <h3>Sugerencias</h3>
-                    <!--Chat Gpt response-->
                 </div>
             </div>
         </div>
@@ -30,7 +28,8 @@
 </template>
 
 <script>
-//import axios from 'axios';
+import axios from 'axios';
+import { ref, onMounted } from 'vue';
 import { useAuth0 } from '@auth0/auth0-vue';
 import NavBarHome from '../components/NavBarHome.vue';
 import AddButton from '../buttons/AddButton.vue';
@@ -38,23 +37,21 @@ import AddButton from '../buttons/AddButton.vue';
 export default {
     setup() {
         const { loading, user } = useAuth0();
-        
-        /*const exercises = ref([]);
+        const exercises = ref([]);
 
-        // Cargar ejercicios desde la API
         onMounted(async () => {
             try {
-                const response = await axios.get('http://localhost:8080/exercise/');
+                const response = await axios.get('http://localhost:8080/exercise');
                 exercises.value = response.data;
             } catch (error) {
-                console.error("Hubo un error al cargar los ejercicios:", error);
+                console.error('Error al cargar los ejercicios:', error);
             }
-        });*/
+        });
 
         return {
             loading,
             user,
-            //exercises
+            exercises
         };
     },
     components: { NavBarHome, AddButton }
@@ -62,7 +59,6 @@ export default {
 </script>
 
 <style>
-
 .bienvenido {
     display: flex;
     flex-direction: space-between;
