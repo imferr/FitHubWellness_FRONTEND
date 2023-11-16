@@ -20,9 +20,11 @@
                                 <img :src="exercise.linkPicture || defaultImageUrl" alt="Exercise Icon">
                             </div>
                             <div class="exercise-info">
-                                <h4>{{ exercise.name }}</h4>
+                                <h3>{{ exercise.name }}</h3>
                                 <p>{{ exercise.description }}</p>
-                                <AddButton />
+                                <div class="seleccionar-ejercicio">
+                                    <CheckButton />
+                                </div>
                             </div>
                         </li>
                     </ul>
@@ -42,6 +44,7 @@ import { ref, onMounted } from 'vue';
 import { useAuth0 } from '@auth0/auth0-vue';
 import NavBarHome from '../components/NavBarHome.vue';
 import AddButton from '../buttons/AddButton.vue';
+import CheckButton from '../buttons/CheckButton.vue';
 import defaultImage from '../assets/logo-dark.png';
 
 export default {
@@ -69,7 +72,7 @@ export default {
             defaultImageUrl
         };
     },
-    components: { NavBarHome, AddButton }
+    components: { NavBarHome, CheckButton, AddButton }
 };
 </script>
 
@@ -175,6 +178,11 @@ export default {
 
 .exercise-info h4 {
     margin: 0;
+}
+
+.seleccionar-ejercicio {
+    display: flex;
+    justify-content: flex-end;
 }
 
 </style>
