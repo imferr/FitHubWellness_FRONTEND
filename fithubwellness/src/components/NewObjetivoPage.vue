@@ -17,8 +17,8 @@
             </select>
 
             <div class="save-data">
-                <a href="/"><SaveButton/></a>
-                <a href="/objetivos"><VolverButton/></a>
+                <router-link to="/"><SaveButton/></router-link>
+                <router-link to="/objetivos"><VolverButton/></router-link>
             </div>
         </form>
     </div>
