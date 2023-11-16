@@ -19,13 +19,14 @@
                     <label>Correo del usuario:</label>
                     <input type="email" readonly v-model="user.email" />
                 </div>
-                <button class="volver-button"><a href="/">VOLVER</a></button>
+                <VolverButton />
             </div>
         </div>
     </div>
 </template>
   
 <script>
+import VolverButton from '@/buttons/VolverButton.vue';
 import NavBarHome from './NavBarHome.vue';
 import { useAuth0 } from '@auth0/auth0-vue';
 
@@ -42,19 +43,24 @@ export default {
             user
         };
     },
-    components: { NavBarHome }
+    components: { NavBarHome, VolverButton }
 };
 </script>
   
 <style>
 
+body {
+    background-image: url('../assets/fondo.gif');
+}
+
 .profile-container {
     font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
     width: 80%;
     margin: 50px auto;
-    padding: 20px;
+    padding: 40px;
     box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.1);
     border-radius: 20px;
+    background-color: white;
 }
 
 .profile-container h1 {
@@ -103,35 +109,6 @@ export default {
     box-sizing: border-box;
     border-radius: 20px;
     border: 1px solid #ccc;
-}
-
-.volver-button {
-    font-weight: bold;
-    background-color: black;
-    border: 2px solid white;
-    color: white;
-    padding: 10px;
-    border-radius: 10px;
-    margin: 5px;
-    cursor: pointer;
-}
-
-.volver-button a {
-    color: white;
-    text-decoration: none;
-}
-
-.volver-button:hover {
-    border: 2px solid black;
-    background-color: white;
-    color: black;
-    scale: 1.1;
-    transition: 0.5s;
-}
-
-.volver-button:hover a {
-    color: black;
-    text-decoration: none;
 }
 
 @media screen and (min-width: 500px) {
