@@ -14,8 +14,17 @@
             <div class="container-home">
                 <div class="exercises-left">
                     <h3>¿Qué vas a entrenar hoy?</h3>
-                    <ul v-if="exercises.length">
-                        <li v-for="exercise in exercises" :key="exercise.id">{{ exercise.name }}</li>
+                    <ul v-if="exercises.length" class="exercise-list">
+                        <li v-for="exercise in exercises" :key="exercise.id" class="exercise-card">
+                            <div class="exercise-icon">
+                                <img :src="exercise.linkPicture || defaultImageUrl" alt="Exercise Icon">
+                            </div>
+                            <div class="exercise-info">
+                                <h4>{{ exercise.name }}</h4>
+                                <p>{{ exercise.description }}</p>
+                                <AddButton />
+                            </div>
+                        </li>
                     </ul>
                     <div v-else>No hay ejercicios disponibles.</div>
                 </div>
@@ -33,16 +42,21 @@ import { ref, onMounted } from 'vue';
 import { useAuth0 } from '@auth0/auth0-vue';
 import NavBarHome from '../components/NavBarHome.vue';
 import AddButton from '../buttons/AddButton.vue';
+import defaultImage from '../assets/logo-dark.png';
 
 export default {
     setup() {
         const { loading, user } = useAuth0();
         const exercises = ref([]);
+        const defaultImageUrl = defaultImage;
 
         onMounted(async () => {
             try {
                 const response = await axios.get('http://localhost:8080/exercise');
-                exercises.value = response.data;
+                exercises.value = response.data.map(exercise => ({
+                  ...exercise,
+                  linkPicture: exercise.linkPicture || defaultImageUrl
+                }));
             } catch (error) {
                 console.error('Error al cargar los ejercicios:', error);
             }
@@ -51,14 +65,17 @@ export default {
         return {
             loading,
             user,
-            exercises
+            exercises,
+            defaultImageUrl
         };
     },
     components: { NavBarHome, AddButton }
 };
 </script>
 
+
 <style>
+
 .bienvenido {
     display: flex;
     flex-direction: space-between;
@@ -89,6 +106,7 @@ export default {
     flex-direction: row;
     justify-content: space-between;
     margin: 2rem;
+    height: 60vh;
 }
 
 .exercises-left {
@@ -96,6 +114,7 @@ export default {
     background-color: rgba(255, 255, 255, 0.486);
     border-radius: 20px;
     padding: 15px;
+    overflow: auto;
 }
 
 .chat-right {
@@ -103,5 +122,59 @@ export default {
     background-color: white;
     border-radius: 20px;
     padding: 15px;
+    overflow: auto;
 }
+
+.exercise-list {
+    list-style-type: none;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    grid-gap: 1rem;
+}
+
+@media (max-width: 1068px) {
+    .exercise-list {
+        grid-template-columns: 1fr;
+        width: auto;
+    }
+    .exercises-left {
+        margin-right: 15px;
+    }
+}
+
+.exercise-card {
+    background-color: #fff;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    display: flex;
+    align-items: center;
+    margin: 10px;
+    padding: 15px;
+}
+
+@media (max-width: 750px) {
+    .container-home {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    .exercises-left {
+        width: auto;
+        margin-bottom: 20px;
+    }
+    .chat-right {
+        width: auto;
+    }
+}
+
+.exercise-icon img {
+    width: 100px;
+    height: auto;
+    margin-right: 20px;
+}
+
+.exercise-info h4 {
+    margin: 0;
+}
+
 </style>
