@@ -55,7 +55,7 @@ export default {
 
         onMounted(async () => {
             try {
-                const response = await axios.get('http://localhost:8080/exercise');
+                const response = await axios.get('http://localhost:8080/api/v1/exercise');
                 exercises.value = response.data.map(exercise => ({
                   ...exercise,
                   linkPicture: exercise.linkPicture || defaultImageUrl

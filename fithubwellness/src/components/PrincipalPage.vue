@@ -11,7 +11,8 @@
                 <p>¿Cómo puede FitHub Wellness ayudarme a seguir mi progreso?</p>
               </div>
               <div class="card-back">
-                <p>FitHub Wellness te permite llevar un registro detallado de tu actividad física y ver tu evolución a lo largo del tiempo, facilitando la adaptación y mejora de tu entrenamiento.</p>
+                <p>FitHub Wellness te permite llevar un registro detallado de tu actividad física y ver tu evolución a lo
+                  largo del tiempo, facilitando la adaptación y mejora de tu entrenamiento.</p>
               </div>
             </div>
           </div>
@@ -21,7 +22,8 @@
                 <p>¿Es FitHub Wellness adecuado para mis objetivos personales de salud?</p>
               </div>
               <div class="card-back">
-                <p>La aplicación te permite personalizar completamente tu lista de rutinas para que se ajusten a tus objetivos de salud y ejercicio, haciéndola ideal para tus necesidades individuales.</p>
+                <p>La aplicación te permite personalizar completamente tu lista de rutinas para que se ajusten a tus
+                  objetivos de salud y ejercicio, haciéndola ideal para tus necesidades individuales.</p>
               </div>
             </div>
           </div>
@@ -31,7 +33,8 @@
                 <p>¿Cómo me ayuda FitHub Wellness a mantener una rutina de ejercicios?</p>
               </div>
               <div class="card-back">
-                <p>Con FitHub Wellness, puedes diseñar y mantener una lista de rutinas de ejercicios adaptadas a tus metas, promoviendo la consistencia y el progreso en tu régimen de entrenamiento.</p>
+                <p>Con FitHub Wellness, puedes diseñar y mantener una lista de rutinas de ejercicios adaptadas a tus
+                  metas, promoviendo la consistencia y el progreso en tu régimen de entrenamiento.</p>
               </div>
             </div>
           </div>
@@ -44,7 +47,8 @@
 <script>
 import { useAuth0 } from '@auth0/auth0-vue';
 import { useRouter } from 'vue-router';
-import { watchEffect } from 'vue';
+import { watchEffect, ref } from 'vue';
+import axios from 'axios';
 import NavBarLogin from '../components/NavBarLogin.vue';
 
 export default {
@@ -52,19 +56,35 @@ export default {
     NavBarLogin
   },
   setup() {
-    const { isAuthenticated } = useAuth0();
+    const { isAuthenticated, user, isLoading } = useAuth0();
     const router = useRouter();
+    const isNewUser = ref(false);
 
-    watchEffect(() => {
-      if (isAuthenticated.value) {
-        if (router.currentRoute.value.path !== '/home') {
-          router.push('/home');
+    watchEffect(async () => {
+      if (isAuthenticated.value && !isLoading.value) {
+        try {
+          const userDetails = {
+            name: user.value.name,
+            email: user.value.email,
+          };
+
+          const response = await axios.post('http://localhost:8080/api/v1/user/findOrCreate', userDetails);
+          
+          if (response.data.isNewUser) {
+            isNewUser.value = true;
+            await router.push('/firstevaluation');
+          } else {
+            await router.push('/home');
+          }
+        } catch (error) {
+          console.error('Error al verificar el usuario:', error);
         }
       }
     });
 
     return {
-      isAuthenticated
+      isAuthenticated,
+      isNewUser
     };
   }
 };
@@ -104,7 +124,8 @@ body {
   transform: rotateY(180deg);
 }
 
-.card-front, .card-back {
+.card-front,
+.card-back {
   position: absolute;
   width: 100%;
   height: 100%;
@@ -128,5 +149,4 @@ body {
   transform: rotateY(180deg);
   border-radius: 20px;
   font-weight: bold;
-}
-</style>
+}</style>

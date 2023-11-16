@@ -5,6 +5,7 @@ import HomePage from '../components/HomePage.vue';
 import ObjetivosPage from '../components/ObjetivosPage.vue';
 import NewObjetivoPage from '../components/NewObjetivoPage.vue';
 import NewEvaluationPage from '../components/NewEvaluationPage.vue';
+import FirstEvaluationPage from '../components/FirstEvaluationPage.vue';
 
 const routes = [
     {
@@ -36,6 +37,11 @@ const routes = [
         path: '/newevaluation',
         name: 'newevaluation',
         component: NewEvaluationPage,
+    },
+    {
+        path: '/firstevaluation',
+        name: 'firstevaluation',
+        component: FirstEvaluationPage,
     },
 
 ];
