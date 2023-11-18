@@ -8,10 +8,6 @@
             </div>
             <div class="info-section">
                 <div class="input-group">
-                    <label>Nickname:</label>
-                    <input type="text" readonly v-model="user.nickname" />
-                </div>
-                <div class="input-group">
                     <label>Nombre del usuario:</label>
                     <input type="text" readonly v-model="user.name" />
                 </div>

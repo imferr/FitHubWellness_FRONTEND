@@ -1,7 +1,8 @@
 <template>
     <div class="first-evaluation">
-        <h1>BIENVENIDO A FITHUB</h1>
+        <h1>BIENVENIDO A FITHUB!</h1>
         <h3>¿Primera vez aquí? ¡Completa algunos datos para comenzar!</h3>
+        <p>Para una atencion más personalizada y un mejor seguimiento de tu progreso, te pedimos que completes los siguientes datos. Esto nos ayudará a conocer tu estado actual y a diseñar un plan de entrenamiento que se adapte a ti y a tus objetivos.</p>
         <form class="form-firstevaluation">
             <label for="weight">Peso:</label>
             <input type="number" id="weight" name="weight">
@@ -14,18 +15,25 @@
 
             <div class="save-first">
                 <router-link to="/"><SaveButton/></router-link>
-                <router-link to="/home"><VolverButton/></router-link>
             </div>
         </form>
     </div>
 </template>
   
 <script>
-import VolverButton from '../buttons/VolverButton.vue';
 import SaveButton from '../buttons/SaveButton.vue';
+import Swal from 'sweetalert2';
 
 export default {
-    components: { VolverButton, SaveButton },
+  components: { SaveButton },
+  mounted() {
+    Swal.fire({
+      title: '¡Bienvenido a Fithub!',
+      text: 'Completa algunos datos para comenzar',
+      icon: 'success',
+      confirmButtonText: '¡Vamos!'
+    });
+  }
 };
 </script>
   
@@ -42,7 +50,7 @@ export default {
 }
 
 .first-evaluation h1 {
-    text-align: start;
+    text-align: center;
 }
 
 .form-firstevaluation {
@@ -68,7 +76,7 @@ export default {
 
 .save-first {
     display: flex;
-    justify-content: space-between;
+    justify-content: flex-end;
     align-items: center;
     margin-top: 20px;
 }

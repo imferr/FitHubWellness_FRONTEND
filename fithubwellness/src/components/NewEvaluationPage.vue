@@ -2,33 +2,62 @@
     <NavBarHome />
     <div class="new-evaluation">
         <h1>Nueva Evaluación</h1>
-        <form class="formulario-evaluation">
+        <form class="formulario-evaluation" @submit.prevent="submitEvaluation">
             <label for="weight">Peso:</label>
-            <input type="number" id="weight" name="weight">
+            <input type="number" id="weight" v-model.number="weight">
 
             <label for="height">Altura (cm):</label>
-            <input type="number" id="height" name="height">
+            <input type="number" id="height" v-model.number="height">
 
             <div class="save-data">
-                <router-link to="/"><SaveButton/></router-link>
-                <router-link to="/home"><VolverButton/></router-link>
+                <button type="submit" class="hidden-button">
+                    <SaveButton />
+                </button>
+                <router-link :to="`/home/${userId}`">
+                    <VolverButton />
+                </router-link>
             </div>
         </form>
     </div>
 </template>
   
 <script>
+import axios from 'axios';
 import NavBarHome from '../components/NavBarHome.vue';
 import VolverButton from '../buttons/VolverButton.vue';
 import SaveButton from '../buttons/SaveButton.vue';
 
 export default {
     components: { NavBarHome, VolverButton, SaveButton },
+    data() {
+        return {
+            weight: null,
+            height: null,
+        };
+    },
+    methods: {
+        async submitEvaluation() {
+            try {
+                const evaluationData = {
+                    weight: this.weight,
+                    height: this.height,
+                    userId: this.userId
+                };
+                
+                const response = await axios.post('http://localhost:8080/api/v1/evaluation/create', evaluationData);
+                console.log('Evaluación creada:', response.data);
+
+            } catch (error) {
+                console.error('Error al enviar la evaluación:', error);
+            }
+        }
+    }
+
 };
 </script>
   
+  
 <style>
-
 .new-evaluation {
     font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
     width: 80%;
@@ -77,5 +106,16 @@ export default {
     }
 }
 
+.hidden-button {
+    background: none;
+    border: none;
+    padding: 0;
+    margin: 0;
+    width: auto;
+    height: auto;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+}
 </style>
   

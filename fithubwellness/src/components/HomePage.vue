@@ -6,7 +6,8 @@
             <div class="bienvenido">
                 <h1>BIENVENIDO A FITHUB</h1>
                 <div class="bienvenido-evaluacion">
-                    <p>Nueva evaluación</p><router-link to="/newevaluation">
+                    <p>Nueva evaluación</p>
+                    <router-link :to="`/newevaluation/${userId}`">
                         <AddButton />
                     </router-link>
                 </div>
@@ -52,14 +53,17 @@ export default {
         const { loading, user } = useAuth0();
         const exercises = ref([]);
         const defaultImageUrl = defaultImage;
+        let userId = null;
 
         onMounted(async () => {
             try {
                 const response = await axios.get('http://localhost:8080/api/v1/exercise');
                 exercises.value = response.data.map(exercise => ({
-                  ...exercise,
-                  linkPicture: exercise.linkPicture || defaultImageUrl
+                    ...exercise,
+                    linkPicture: exercise.linkPicture || defaultImageUrl
                 }));
+                
+                userId = response.data.userid;
             } catch (error) {
                 console.error('Error al cargar los ejercicios:', error);
             }
@@ -69,7 +73,8 @@ export default {
             loading,
             user,
             exercises,
-            defaultImageUrl
+            defaultImageUrl,
+            userId
         };
     },
     components: { NavBarHome, CheckButton, AddButton }
@@ -77,8 +82,8 @@ export default {
 </script>
 
 
-<style>
 
+<style>
 .bienvenido {
     display: flex;
     flex-direction: space-between;
@@ -141,6 +146,7 @@ export default {
         grid-template-columns: 1fr;
         width: auto;
     }
+
     .exercises-left {
         margin-right: 15px;
     }
@@ -161,10 +167,12 @@ export default {
         flex-direction: column;
         align-items: flex-start;
     }
+
     .exercises-left {
         width: auto;
         margin-bottom: 20px;
     }
+
     .chat-right {
         width: auto;
     }
@@ -184,5 +192,4 @@ export default {
     display: flex;
     justify-content: flex-end;
 }
-
 </style>

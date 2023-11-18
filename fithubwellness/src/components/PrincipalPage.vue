@@ -47,9 +47,9 @@
 <script>
 import { useAuth0 } from '@auth0/auth0-vue';
 import { useRouter } from 'vue-router';
-import { watchEffect, ref } from 'vue';
 import axios from 'axios';
 import NavBarLogin from '../components/NavBarLogin.vue';
+import { watchEffect } from 'vue';
 
 export default {
   components: {
@@ -58,33 +58,35 @@ export default {
   setup() {
     const { isAuthenticated, user, isLoading } = useAuth0();
     const router = useRouter();
-    const isNewUser = ref(false);
+
+    const createUserOrFindUser = async (userDetails) => {
+      try {
+        const response = await axios.post('http://localhost:8080/api/v1/user/findOrCreate', userDetails);
+
+        if (response.data) {
+          const userId = response.data.userId;
+          router.push({ name: 'home', params: { id: userId } });
+        } else {
+          console.error('Error al crear o encontrar el usuario');
+        }
+      } catch (error) {
+        console.error('Error al crear o encontrar el usuario:', error);
+        router.push({ name: 'firstevaluation' });
+      }
+    };
 
     watchEffect(async () => {
       if (isAuthenticated.value && !isLoading.value) {
-        try {
-          const userDetails = {
-            name: user.value.name,
-            email: user.value.email,
-          };
-
-          const response = await axios.post('http://localhost:8080/api/v1/user/findOrCreate', userDetails);
-          
-          if (response.data.isNewUser) {
-            isNewUser.value = true;
-            await router.push('/firstevaluation');
-          } else {
-            await router.push('/home');
-          }
-        } catch (error) {
-          console.error('Error al verificar el usuario:', error);
-        }
+        const userDetails = {
+          name: user.value.name,
+          email: user.value.email,
+        };
+        createUserOrFindUser(userDetails);
       }
     });
 
     return {
-      isAuthenticated,
-      isNewUser
+      isAuthenticated
     };
   }
 };
@@ -149,4 +151,5 @@ body {
   transform: rotateY(180deg);
   border-radius: 20px;
   font-weight: bold;
-}</style>
+}
+</style>

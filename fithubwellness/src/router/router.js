@@ -19,7 +19,7 @@ const routes = [
         component: PerfilPage,
     },
     {
-        path: '/home',
+        path: '/home/:id',
         name: 'home',
         component: HomePage,
     },
@@ -34,7 +34,7 @@ const routes = [
         component: NewObjetivoPage,
     },
     {
-        path: '/newevaluation',
+        path: '/newevaluation/:id',
         name: 'newevaluation',
         component: NewEvaluationPage,
     },
