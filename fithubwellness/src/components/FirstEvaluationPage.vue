@@ -2,7 +2,7 @@
     <div class="first-evaluation">
         <h1>BIENVENIDO A FITHUB!</h1>
         <h3>¿Primera vez aquí? ¡Completa algunos datos para comenzar!</h3>
-        <p>Para una atencion más personalizada y un mejor seguimiento de tu progreso, te pedimos que completes los
+        <p>Para una atención más personalizada y un mejor seguimiento de tu progreso, te pedimos que completes los
             siguientes datos. Esto nos ayudará a conocer tu estado actual y a diseñar un plan de entrenamiento que se adapte
             a ti y a tus objetivos.</p>
         <form class="form-firstevaluation">
@@ -21,7 +21,7 @@
         </form>
     </div>
 </template>
-  
+
 <script>
 import { ref, watchEffect } from 'vue';
 import { useAuth0 } from '@auth0/auth0-vue';
@@ -44,16 +44,23 @@ export default {
             }
         });
 
+        const showWelcomeMessage = () => {
+            Swal.fire('¡Bienvenido!', 'Gracias por unirte a FITHUB', 'success');
+        };
+
         const submitForm = () => {
             if (!isUserDataLoaded.value) {
                 alert("Los datos del usuario aún no están disponibles. Por favor, espera.");
                 return;
             }
 
+            const selectedBirthday = new Date(birthday.value);
+            selectedBirthday.setDate(selectedBirthday.getDate() + 1);
+
             const userData = {
                 name: user.value.name,
                 email: user.value.email,
-                birthday: birthday.value
+                birthday: selectedBirthday
             };
 
             const evaluationData = {
@@ -77,7 +84,10 @@ export default {
                 });
         };
 
-        return { weight, height, birthday, submitForm };
+        return { weight, height, birthday, submitForm, showWelcomeMessage };
+    },
+    mounted() {
+        this.showWelcomeMessage();
     }
 };
 </script>
