@@ -1,134 +1,65 @@
 <template>
-    <NavBarHome />
-    <div class="profile-container">
-        <h1>MI PERFIL</h1>
-        <div class="profile-content">
-            <div class="image-section">
-                <img :src="user.picture" alt="profile picture" />
-            </div>
-            <div class="info-section">
-                <div class="input-group">
-                    <label>Nombre del usuario:</label>
-                    <input type="text" readonly v-model="user.name" />
-                </div>
-                <div class="input-group">
-                    <label>Correo del usuario:</label>
-                    <input type="email" readonly v-model="user.email" />
-                </div>
-                <VolverButton />
-            </div>
-        </div>
-    </div>
+  <NavBarHome />
+  <div class="container-perfil">
+    <div class="perfil-left"></div>
+    <div class="historial-right"></div>
+  </div>
 </template>
-  
+
 <script>
-import VolverButton from '@/buttons/VolverButton.vue';
-import NavBarHome from './NavBarHome.vue';
-import { useAuth0 } from '@auth0/auth0-vue';
+import NavBarHome from "../components/NavBarHome.vue";
 
 export default {
-    data() {
-        return {
-            showDropdown: false,
-        };
-    },
-    setup() {
-        const { isAuthenticated, user } = useAuth0();
-        return {
-            isAuthenticated,
-            user
-        };
-    },
-    components: { NavBarHome, VolverButton }
+  components: { NavBarHome },
 };
 </script>
-  
+
 <style>
 
-body {
-    background-image: url('../assets/fondo.gif');
+.container-perfil {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  margin: 2rem;
+  height: 60vh;
 }
 
-.profile-container {
-    font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
-    width: 80%;
-    margin: 50px auto;
-    padding: 40px;
-    box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.1);
-    border-radius: 20px;
-    background-color: white;
+.perfil-left {
+  width: 70%;
+  background-color: rgba(255, 255, 255, 0.486);
+  border-radius: 20px;
+  padding: 15px;
+  overflow: auto;
 }
 
-.profile-container h1 {
-    text-align: start;
-    margin: 20px;
+.historial-right {
+  width: 25%;
+  background-color: white;
+  border-radius: 20px;
+  padding: 15px;
+  overflow: auto;
 }
 
-.profile-content {
-    display: flex;
-    justify-content: space-between;
+@media (max-width: 1068px) {   
+  .perfil-left {
+    margin-right: 15px;
+  }
 }
 
-.image-section {
-    width: 40%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
+@media (max-width: 750px) {
+  .container-perfil {
+    flex-direction: column;
+    align-items: flex-start;
+  }
 
-.image-section img {
-    width: 70vw;
-    max-width: 300px;
-    min-width: 150px;
-    height: auto;
-    border-radius: 50%;
-    border: 1px solid #ccc;
-}
-
-.info-section {
-    width: 55%;
-}
-
-.input-group {
+  .perfil-left {
+    width: auto;
     margin-bottom: 20px;
+  }
+
+  .historial-right {
+    width: auto;
+  }
 }
 
-.info-section label {
-    display: block;
-    margin-bottom: 10px;
-    font-weight: bold;
-}
-
-.input-group input {
-    width: 100%;
-    padding: 10px;
-    box-sizing: border-box;
-    border-radius: 20px;
-    border: 1px solid #ccc;
-}
-
-@media screen and (min-width: 500px) {
-    .profile-container {
-        width: 50%;
-    }
-}
-
-@media screen and (max-width: 799px) {
-    .profile-content {
-        flex-direction: column;
-        align-items: center;
-    }
-
-    .image-section {
-        order: 1;
-        margin-bottom: 20px;
-        width: 100%;
-    }
-
-    .info-section {
-        order: 2;
-        width: 100%;
-    }
-}
 </style>
-  

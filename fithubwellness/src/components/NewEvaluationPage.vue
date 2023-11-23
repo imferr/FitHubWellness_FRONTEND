@@ -51,28 +51,24 @@ export default {
           userId: parseInt(this.userId, 10),
         };
 
-        console.log("evaluationData creada:", evaluationData);
-        console.log("params:", this.$route.params);
-
-        const response = await axios.post(
-          "http://localhost:8080/api/v1/evaluation/create",
+        await axios.put(
+          `http://localhost:8080/api/v1/evaluation/update/${this.userId}`,
           evaluationData
         );
-        console.log("Evaluación creada:", response.data);
         Swal.fire({
           icon: "success",
-          title: "Evaluación creada con éxito",
+          title: "Evaluación actualizada con éxito",
+          text: "La evaluación se ha actualizado correctamente, puedas verla en tu perfil.",
           showConfirmButton: false,
-          timer: 1500,
+          timer: 2000,
         }).then(() => {
           this.$router.push({ name: "home", params: { id: this.userId } });
         });
       } catch (error) {
-        console.error("Error al enviar la evaluación:", error);
         Swal.fire({
           icon: "error",
           title: "Error al enviar la evaluación",
-          text: "Ha ocurrido un error al crear la evaluación. Por favor, inténtalo de nuevo.",
+          text: "Ha ocurrido un error al actualizar la evaluación. Por favor, inténtalo de nuevo.",
         });
       }
     },
@@ -80,7 +76,7 @@ export default {
       this.$router.push({ name: "home", params: { id: this.userId } });
     },
     validateWeight() {
-      const regex = /^\d+\.\d+$/; // Expresión regular para validar números con punto decimal
+      const regex = /^\d+\.\d+$/;
       this.isValidWeight = regex.test(this.weight);
     },
   },
