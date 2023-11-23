@@ -4,14 +4,18 @@
     <h1>Nueva Evaluación</h1>
     <form class="formulario-evaluation" @submit.prevent="submitEvaluation">
       <label for="weight">Peso:</label>
-      <input type="number" id="weight" v-model.number="weight" />
+      <input type="text" id="weight" v-model="weight" @input="validateWeight" />
 
       <label for="height">Altura (cm):</label>
       <input type="number" id="height" v-model.number="height" />
 
       <div class="save-data">
-        <button class="save-button" type="submit">GUARDAR</button>
-        <button class="volver-button" type="button" @click="goHome">VOLVER</button>
+        <button class="save-button" type="submit" :disabled="!isValidWeight">
+          GUARDAR
+        </button>
+        <button class="volver-button" type="button" @click="goHome">
+          VOLVER
+        </button>
       </div>
     </form>
   </div>
@@ -29,19 +33,26 @@ export default {
       weight: null,
       height: null,
       userId: null,
+      isValidWeight: false,
     };
   },
   created() {
-    this.userId = this.$route.params.userId;
+    this.userId = this.$route.params.id;
   },
   methods: {
     async submitEvaluation() {
+      let weightFloat = parseFloat(this.weight);
+      weightFloat = parseFloat(weightFloat.toFixed(2));
+
       try {
         const evaluationData = {
-          weight: this.weight,
+          weight: weightFloat,
           height: this.height,
-          userId: this.userId,
+          userId: parseInt(this.userId, 10),
         };
+
+        console.log("evaluationData creada:", evaluationData);
+        console.log("params:", this.$route.params);
 
         const response = await axios.post(
           "http://localhost:8080/api/v1/evaluation/create",
@@ -56,7 +67,6 @@ export default {
         }).then(() => {
           this.$router.push({ name: "home", params: { id: this.userId } });
         });
-        
       } catch (error) {
         console.error("Error al enviar la evaluación:", error);
         Swal.fire({
@@ -68,6 +78,10 @@ export default {
     },
     goHome() {
       this.$router.push({ name: "home", params: { id: this.userId } });
+    },
+    validateWeight() {
+      const regex = /^\d+\.\d+$/; // Expresión regular para validar números con punto decimal
+      this.isValidWeight = regex.test(this.weight);
     },
   },
 };
