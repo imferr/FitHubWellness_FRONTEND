@@ -3,14 +3,23 @@
   <div class="new-evaluation">
     <h1>Nueva Evaluación</h1>
     <form class="formulario-evaluation" @submit.prevent="submitEvaluation">
-      <label for="weight">Peso:</label>
-      <input type="text" id="weight" v-model="weight" @input="validateWeight" />
-
+      <label for="weight">Peso (kg):</label>
+      <input
+        type="number"
+        id="weight"
+        v-model.number="weight"
+        @input="validateWeight"
+        step="any"
+      />
       <label for="height">Altura (cm):</label>
-      <input type="number" id="height" v-model.number="height" />
-
+      <input
+        type="number"
+        id="height"
+        v-model.number="height"
+        @input="validateHeight"
+      />
       <div class="save-data">
-        <button class="save-button" type="submit" :disabled="!isValidWeight">
+        <button class="save-button" type="submit" :disabled="!isValidForm">
           GUARDAR
         </button>
         <button class="volver-button" type="button" @click="goHome">
@@ -22,62 +31,62 @@
 </template>
 
 <script>
+import NavBarHome from "@/components/NavBarHome";
 import axios from "axios";
-import NavBarHome from "../components/NavBarHome.vue";
 import Swal from "sweetalert2";
 
 export default {
-  components: { NavBarHome },
+  components: {
+    NavBarHome,
+  },
   data() {
     return {
       weight: null,
       height: null,
       userId: null,
-      isValidWeight: false,
+      isValidForm: false,
     };
   },
-  created() {
+  mounted() {
     this.userId = this.$route.params.id;
   },
   methods: {
     async submitEvaluation() {
-      let weightFloat = parseFloat(this.weight);
-      weightFloat = parseFloat(weightFloat.toFixed(2));
-
+      const evaluationData = {
+        weight: this.weight,
+        height: this.height,
+      };
       try {
-        const evaluationData = {
-          weight: weightFloat,
-          height: this.height,
-          userId: parseInt(this.userId, 10),
-        };
-
-        await axios.put(
-          `http://localhost:8080/api/v1/evaluation/update/${this.userId}`,
-          evaluationData
+        await this.apiUpdateEvaluation(this.userId, evaluationData);
+        Swal.fire(
+          "¡Éxito!",
+          "La evaluación se ha actualizado correctamente.",
+          "success"
         );
-        Swal.fire({
-          icon: "success",
-          title: "Evaluación actualizada con éxito",
-          text: "La evaluación se ha actualizado correctamente, puedas verla en tu perfil.",
-          showConfirmButton: false,
-          timer: 2000,
-        }).then(() => {
-          this.$router.push({ name: "home", params: { id: this.userId } });
-        });
+        this.$router.push({ name: "home" , params: { userId: this.userId }});
       } catch (error) {
-        Swal.fire({
-          icon: "error",
-          title: "Error al enviar la evaluación",
-          text: "Ha ocurrido un error al actualizar la evaluación. Por favor, inténtalo de nuevo.",
-        });
+        Swal.fire(
+          "Error",
+          "Hubo un problema al actualizar la evaluación.",
+          "error"
+        );
       }
     },
-    goHome() {
-      this.$router.push({ name: "home", params: { id: this.userId } });
+    async apiUpdateEvaluation(userId, evaluationData) {
+      return axios.put(
+        `http://localhost:8080/api/v1/evaluation/update/${userId}`,
+        evaluationData
+      );
     },
     validateWeight() {
-      const regex = /^\d+\.\d+$/;
-      this.isValidWeight = regex.test(this.weight);
+      this.isValidForm =
+        !isNaN(parseFloat(this.weight)) && this.weight > 0 && this.height > 0;
+    },
+    validateHeight() {
+      this.isValidForm = this.weight > 0 && this.height > 0;
+    },
+    goHome() {
+      this.$router.push({ name: "home", params: { userId: this.userId } });
     },
   },
 };
