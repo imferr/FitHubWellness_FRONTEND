@@ -39,9 +39,9 @@ export default {
     const router = useRouter();
     const { user, isAuthenticated } = useAuth0();
     const isUserDataLoaded = ref(false);
-    const weight = ref(null);
-    const height = ref(null);
-    const birthday = ref(null);
+    const weight = ref("");
+    const height = ref("");
+    const birthday = ref("");
 
     watchEffect(() => {
       if (
@@ -54,6 +54,45 @@ export default {
       }
     });
 
+    const validateFields = () => {
+      if (weight.value === "" || height.value === "" || birthday.value === "") {
+        Swal.fire("Error", "Todos los campos deben estar llenos.", "error");
+        return false;
+      }
+      if (
+        weight.value < 25 ||
+        weight.value > 200 ||
+        height.value < 50 ||
+        height.value > 250
+      ) {
+        Swal.fire(
+          "Error",
+          "El peso y la altura deben estar en un rango válido.",
+          "error"
+        );
+        return false;
+      }
+      const birthDate = new Date(birthday.value);
+      const currentDate = new Date();
+      const eightYearsAgo = new Date(
+        currentDate.getFullYear() - 8,
+        currentDate.getMonth(),
+        currentDate.getDate()
+      );
+      if (birthDate.getFullYear() < 1900) {
+        Swal.fire("Error", "Ingrese una fecha válida", "error");
+        return false;
+      } else if (birthDate > eightYearsAgo) {
+        Swal.fire(
+          "Error",
+          "Debes tener al menos 8 años para usar la aplicación",
+          "error"
+        );
+        return false;
+      }
+      return true;
+    };
+
     const submitForm = () => {
       if (!isUserDataLoaded.value) {
         alert(
@@ -61,26 +100,24 @@ export default {
         );
         return;
       }
-
+      if (!validateFields()) {
+        return;
+      }
       const selectedBirthday = new Date(birthday.value);
       selectedBirthday.setDate(selectedBirthday.getDate() + 1);
-
       const userData = {
         name: user.value.name,
         email: user.value.email,
         birthday: selectedBirthday.toISOString().split("T")[0],
       };
-
       const evaluationData = {
         weight: weight.value,
         height: height.value,
       };
-
       const requestData = {
         user: userData,
         evaluation: evaluationData,
       };
-
       axios
         .post(
           "http://localhost:8080/api/v1/user/createWithEvaluation",
@@ -100,14 +137,10 @@ export default {
             "Hubo un error al crear el usuario y la evaluación: " + error,
             "error"
           );
-          console.error("Error al crear el usuario y la evaluación:", error);
         });
     };
 
     return { weight, height, birthday, submitForm };
-  },
-  mounted() {
-    Swal.fire("¡Bienvenido!", "Gracias por unirte a FITHUB, por favor, completa tu inscripción", "success");
   },
 };
 </script>

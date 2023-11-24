@@ -4,24 +4,11 @@
     <h1>Nueva Evaluación</h1>
     <form class="formulario-evaluation" @submit.prevent="submitEvaluation">
       <label for="weight">Peso (kg):</label>
-      <input
-        type="number"
-        id="weight"
-        v-model.number="weight"
-        @input="validateWeight"
-        step="any"
-      />
+      <input type="number" id="weight" v-model.number="weight" step="any" />
       <label for="height">Altura (cm):</label>
-      <input
-        type="number"
-        id="height"
-        v-model.number="height"
-        @input="validateHeight"
-      />
+      <input type="number" id="height" v-model.number="height" />
       <div class="save-data">
-        <button class="save-button" type="submit" :disabled="!isValidForm">
-          GUARDAR
-        </button>
+        <button class="save-button" type="submit">GUARDAR</button>
         <button class="volver-button" type="button" @click="goHome">
           VOLVER
         </button>
@@ -41,10 +28,9 @@ export default {
   },
   data() {
     return {
-      weight: null,
-      height: null,
+      weight: "",
+      height: "",
       userId: null,
-      isValidForm: false,
     };
   },
   mounted() {
@@ -52,18 +38,21 @@ export default {
   },
   methods: {
     async submitEvaluation() {
+      if (!this.validateFields()) {
+        return;
+      }
       const evaluationData = {
         weight: this.weight,
         height: this.height,
       };
       try {
         await this.apiUpdateEvaluation(this.userId, evaluationData);
-        Swal.fire(
+        await Swal.fire(
           "¡Éxito!",
           "La evaluación se ha actualizado correctamente.",
           "success"
         );
-        this.$router.push({ name: "home" , params: { userId: this.userId }});
+        this.$router.push({ name: "home", params: { userId: this.userId } });
       } catch (error) {
         Swal.fire(
           "Error",
@@ -78,12 +67,25 @@ export default {
         evaluationData
       );
     },
-    validateWeight() {
-      this.isValidForm =
-        !isNaN(parseFloat(this.weight)) && this.weight > 0 && this.height > 0;
-    },
-    validateHeight() {
-      this.isValidForm = this.weight > 0 && this.height > 0;
+    validateFields() {
+      if (this.weight === "" || this.height === "") {
+        Swal.fire("Error", "Todos los campos deben estar llenos.", "error");
+        return false;
+      }
+      if (
+        this.weight < 25 ||
+        this.weight > 200 ||
+        this.height < 120 ||
+        this.height > 250
+      ) {
+        Swal.fire(
+          "Error",
+          "El peso y la altura deben estar en un rango válido.",
+          "error"
+        );
+        return false;
+      }
+      return true;
     },
     goHome() {
       this.$router.push({ name: "home", params: { userId: this.userId } });
