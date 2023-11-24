@@ -11,7 +11,8 @@
                 <p>¿Cómo puede FitHub Wellness ayudarme a seguir mi progreso?</p>
               </div>
               <div class="card-back">
-                <p>FitHub Wellness te permite llevar un registro detallado de tu actividad física y ver tu evolución a lo largo del tiempo, facilitando la adaptación y mejora de tu entrenamiento.</p>
+                <p>FitHub Wellness te permite llevar un registro detallado de tu actividad física y ver tu evolución a lo
+                  largo del tiempo, facilitando la adaptación y mejora de tu entrenamiento.</p>
               </div>
             </div>
           </div>
@@ -21,7 +22,8 @@
                 <p>¿Es FitHub Wellness adecuado para mis objetivos personales de salud?</p>
               </div>
               <div class="card-back">
-                <p>La aplicación te permite personalizar completamente tu lista de rutinas para que se ajusten a tus objetivos de salud y ejercicio, haciéndola ideal para tus necesidades individuales.</p>
+                <p>La aplicación te permite personalizar completamente tu lista de rutinas para que se ajusten a tus
+                  objetivos de salud y ejercicio, haciéndola ideal para tus necesidades individuales.</p>
               </div>
             </div>
           </div>
@@ -31,7 +33,8 @@
                 <p>¿Cómo me ayuda FitHub Wellness a mantener una rutina de ejercicios?</p>
               </div>
               <div class="card-back">
-                <p>Con FitHub Wellness, puedes diseñar y mantener una lista de rutinas de ejercicios adaptadas a tus metas, promoviendo la consistencia y el progreso en tu régimen de entrenamiento.</p>
+                <p>Con FitHub Wellness, puedes diseñar y mantener una lista de rutinas de ejercicios adaptadas a tus
+                  metas, promoviendo la consistencia y el progreso en tu régimen de entrenamiento.</p>
               </div>
             </div>
           </div>
@@ -44,22 +47,41 @@
 <script>
 import { useAuth0 } from '@auth0/auth0-vue';
 import { useRouter } from 'vue-router';
-import { watchEffect } from 'vue';
+import axios from 'axios';
 import NavBarLogin from '../components/NavBarLogin.vue';
+import { watchEffect } from 'vue';
 
 export default {
   components: {
     NavBarLogin
   },
   setup() {
-    const { isAuthenticated } = useAuth0();
+    const { isAuthenticated, user, isLoading } = useAuth0();
     const router = useRouter();
 
-    watchEffect(() => {
-      if (isAuthenticated.value) {
-        if (router.currentRoute.value.path !== '/home') {
-          router.push('/home');
+    const createUserOrFindUser = async (userDetails) => {
+      try {
+        const response = await axios.post('http://localhost:8080/api/v1/user/findOrCreate', userDetails);
+
+        if (response.data) {
+          const userId = response.data.userId;
+          router.push({ name: 'home', params: { id: userId } });
+        } else {
+          console.error('Error al crear o encontrar el usuario');
         }
+      } catch (error) {
+        console.error('Error al crear o encontrar el usuario:', error);
+        router.push({ name: 'firstevaluation' });
+      }
+    };
+
+    watchEffect(async () => {
+      if (isAuthenticated.value && !isLoading.value) {
+        const userDetails = {
+          name: user.value.name,
+          email: user.value.email,
+        };
+        createUserOrFindUser(userDetails);
       }
     });
 
@@ -104,7 +126,8 @@ body {
   transform: rotateY(180deg);
 }
 
-.card-front, .card-back {
+.card-front,
+.card-back {
   position: absolute;
   width: 100%;
   height: 100%;

@@ -5,7 +5,7 @@
       <p>BIENVENIDO A FITHUB WELLNESS</p>
     </div>
     <div class="navbar-links">
-      <a href="/home">INICIO</a>
+      <a href="/home/:id">INICIO</a>
       <a href="/objetivos">OBJETIVOS</a>
       <a href="/historial">HISTORIAL</a>
       <div class="dropdown">
