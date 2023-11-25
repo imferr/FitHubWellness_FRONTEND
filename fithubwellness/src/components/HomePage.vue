@@ -12,10 +12,13 @@
           </button>
         </div>
       </div>
-      <button v-if="showExercises" @click="showExercises = false">Volver a Partes del Cuerpo</button>
       <div class="container-home">
         <div class="exercises-left">
-          <h3 v-if="!showExercises">¿Qué vas a entrenar hoy?</h3>
+          <div class="exercise-camp" v-if="showExercises">
+            <button class="volver-button" v-if="showExercises" @click="showExercises = false">Volver</button>
+            <h2>Excercises to {{ selectedBodyPart }}</h2>
+          </div>
+          <h2 v-if="!showExercises">¿Qué vas a entrenar hoy?</h2>
           <div v-if="!showExercises" class="body-parts">
             <div 
               v-for="bodyPart in bodyParts" 
@@ -45,11 +48,13 @@
                 <h3>{{ exercise.name }}</h3>
                 <p>{{ exercise.description }}</p>
                 <div class="seleccionar-ejercicio">
+                  <p><b>Seleccionar</b></p>
                   <CheckButton />
                 </div>
               </div>
             </li>
           </ul>
+          <div v-else class="loading"><loading-circle></loading-circle></div>
         </div>
         <div class="chat-right">
           <h3>Sugerencias</h3>
@@ -67,6 +72,7 @@ import NavBarHome from "../components/NavBarHome.vue";
 import CheckButton from "../buttons/CheckButton.vue";
 import defaultImage from "../assets/logo-dark.png";
 import { useRouter } from "vue-router";
+import LoadingCircle from "../view/LoadingCircle.vue";
 
 export default {
   setup() {
@@ -138,7 +144,7 @@ export default {
       getBodyPartImage,
     };
   },
-  components: { NavBarHome, CheckButton },
+  components: { NavBarHome, CheckButton, LoadingCircle },
 };
 </script>
 
@@ -255,6 +261,11 @@ export default {
 .seleccionar-ejercicio {
   display: flex;
   justify-content: flex-end;
+  align-items: center;
+}
+
+.seleccionar-ejercicio p {
+  margin-right: 10px;
 }
 
 .body-parts {
@@ -276,4 +287,27 @@ export default {
   padding: 15px;
   cursor: pointer;
 }
+
+.body-part-card:hover {
+  transition: 0.3s;
+  scale: 1.05;
+}
+
+.exercise-camp {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+}
+
+.loading {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 70%;
+}
+
+.exercise-camp h2 {
+  margin-left: 10px;
+}
+
 </style>
