@@ -1,19 +1,68 @@
 <template>
   <NavBarHome />
-  <div class="new-evaluation">
-    <h1>Nueva Evaluación</h1>
-    <form class="formulario-evaluation" @submit.prevent="submitEvaluation">
-      <label for="weight">Peso (kg):</label>
-      <input type="number" id="weight" v-model.number="weight" step="any" />
-      <label for="height">Altura (cm):</label>
-      <input type="number" id="height" v-model.number="height" />
-      <div class="save-data">
-        <button class="save-button" type="submit">GUARDAR</button>
-        <button class="volver-button" type="button" @click="goHome">
-          VOLVER
-        </button>
+  <div class="evaluation-container">
+    <div class="evaluation">
+      <div class="encabezado">
+        <img src="../assets/logo-dark.png" alt="" height="70" width="70" />
+        <h1>Nueva Evaluación</h1>
       </div>
-    </form>
+      <form class="formulario-evaluation" @submit.prevent="submitEvaluation">
+        <label for="weight">Peso (kg):</label>
+        <input
+          type="number"
+          id="weight"
+          v-model.number="weight"
+          step="any"
+          placeholder="Ingrese su peso en kilogramos"
+        />
+        <label for="height">Altura (cm):</label>
+        <input
+          type="number"
+          id="height"
+          v-model.number="height"
+          placeholder="Ingrese su altura en centímetros"
+        />
+        <div class="save-data">
+          <button class="save-button" type="submit">GUARDAR</button>
+          <button class="volver-button" type="button" @click="goHome">
+            VOLVER
+          </button>
+        </div>
+      </form>
+    </div>
+    <div class="evaluation-actual">
+      <div class="encabezado-actual">
+        <img src="../assets/logo-dark.png" alt="" height="70" width="70" />
+        <h1>Evaluación Actual</h1>
+      </div>
+      <form
+        class="formulario-evaluation-salida"
+        @submit.prevent="submitEvaluation"
+      >
+        <label for="height">Última actualización:</label>
+        <input type="date" id="lastUpdate" placeholder="Última actualización" />
+        <label for="weight">Peso (kg):</label>
+        <input
+          type="number"
+          id="weight"
+          placeholder="Ingrese su peso en kilogramos"
+        />
+        <label for="height">Altura (cm):</label>
+        <input
+          type="number"
+          id="height"
+          placeholder="Ingrese su altura en centímetros"
+        />
+        <label for="height">Índice de masa corporal (IMC):</label>
+        <input
+          type="number"
+          id="imc"
+          placeholder="Su índice de masa corporal"
+        />
+        <label for="height">Estado (IMC):</label>
+        <input type="text" id="estado" placeholder="Su estado según el IMC" />
+      </form>
+    </div>
   </div>
 </template>
 
@@ -52,7 +101,6 @@ export default {
           "La evaluación se ha actualizado correctamente.",
           "success"
         );
-        this.$router.push({ name: "home", params: { userId: this.userId } });
       } catch (error) {
         Swal.fire(
           "Error",
@@ -73,8 +121,8 @@ export default {
         return false;
       }
       if (
-        this.weight < 25 ||
-        this.weight > 200 ||
+        this.weight < 20 ||
+        this.weight > 300 ||
         this.height < 120 ||
         this.height > 250
       ) {
@@ -95,34 +143,46 @@ export default {
 </script>
 
 <style>
-.new-evaluation {
-  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
-    Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
-  width: 80%;
-  margin: 50px auto;
-  padding: 40px;
-  box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.1);
-  border-radius: 20px;
+.evaluation-container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-around;
+  margin: 2% 5%;
+}
+
+.evaluation,
+.evaluation-actual {
   background-color: white;
+  flex: 0 0 45%;
+  margin: 10px;
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+  border-radius: 20px;
+  padding: 20px;
+  height: 65vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
 }
 
 .new-evaluation h1 {
   text-align: start;
 }
 
-.formulario-evaluation {
+.formulario-evaluation,
+.formulario-evaluation-salida {
   display: flex;
   flex-direction: column;
-  justify-content: space-around;
 }
 
-.formulario-evaluation label {
+.formulario-evaluation label,
+.formulario-evaluation-salida label {
   display: block;
   margin: 10px;
   font-weight: bold;
 }
 
-.formulario-evaluation input {
+.formulario-evaluation input,
+.formulario-evaluation-salida input {
   width: 100%;
   padding: 15px;
   margin-bottom: 5px;
@@ -139,20 +199,37 @@ export default {
 }
 
 @media screen and (min-width: 500px) {
-  .new-evaluation {
-    width: 50%;
+  .evaluation,
+  .evaluation-actual {
+    flex: 0 0 40%;
   }
 }
 
-.hidden-button {
-  background: none;
-  border: none;
-  padding: 0;
-  margin: 0;
-  width: auto;
-  height: auto;
-  overflow: hidden;
-  clip: rect(0, 0, 0, 0);
-  white-space: nowrap;
+.encabezado {
+  display: flex;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.encabezado img,
+.encabezado-actual img {
+  margin-right: 20px;
+}
+
+.encabezado-actual {
+  display: flex;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+@media (max-width: 500px) {
+  .evaluation,
+  .evaluation-actual {
+    flex: 0 0 90%;
+  }
+}
+
+.formulario-evaluation-salida {
+  overflow: auto;
 }
 </style>

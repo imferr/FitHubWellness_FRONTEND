@@ -21,7 +21,7 @@ export default {
   flex-direction: row;
   justify-content: space-between;
   margin: 2rem;
-  height: 60vh;
+  height: 75vh;
 }
 
 .perfil-left {

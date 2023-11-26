@@ -9,11 +9,11 @@
       a tus objetivos.
     </p>
     <form class="form-firstevaluation">
-      <label for="weight">Peso:</label>
-      <input type="number" id="weight" name="weight" v-model="weight" />
+      <label for="weight">Peso (kg):</label>
+      <input type="number" id="weight" name="weight" v-model="weight" placeholder="Ingrese su peso en kilogramos" />
 
       <label for="height">Altura (cm):</label>
-      <input type="number" id="height" name="height" v-model="height" />
+      <input type="number" id="height" name="height" v-model="height" placeholder="Ingrese su altura en centímetros" />
 
       <label for="birthday">Cumpleaños:</label>
       <input type="date" id="birthday" name="birthday" v-model="birthday" />
@@ -60,8 +60,8 @@ export default {
         return false;
       }
       if (
-        weight.value < 25 ||
-        weight.value > 200 ||
+        weight.value < 20 ||
+        weight.value > 300 ||
         height.value < 50 ||
         height.value > 250
       ) {
