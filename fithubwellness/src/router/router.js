@@ -3,7 +3,7 @@ import PrincipalPage from '../components/PrincipalPage.vue';
 import PerfilPage from '../components/PerfilPage.vue';
 import HomePage from '../components/HomePage.vue';
 import ObjetivosPage from '../components/ObjetivosPage.vue';
-import NewObjetivoPage from '../components/NewObjetivoPage.vue';
+import PersonalRecordPage from '../components/PersonalRecordPage.vue';
 import NewEvaluationPage from '../components/NewEvaluationPage.vue';
 import FirstEvaluationPage from '../components/FirstEvaluationPage.vue';
 
@@ -29,9 +29,9 @@ const routes = [
         component: ObjetivosPage,
     },
     {
-        path: '/newobjetivo/:id',
-        name: 'newobjetivo',
-        component: NewObjetivoPage,
+        path: '/record/:id',
+        name: 'record',
+        component: PersonalRecordPage,
     },
     {
         path: '/newevaluation/:id',

@@ -1,27 +1,25 @@
 <template>
   <NavBarHome />
-  <div class="objetivos-container">
-    <div class="objetivo-card">
+  <div class="record-container">
+    <div class="records-card">
       <div>
-        <h1>Objetivos</h1>
-        <h3>Objetivos cumplidos</h3>
-        <h3>Objetivos por cumplir</h3>
+        <h1>Personal Record</h1>
+        <p>Registra tus mejores marcas, pesos y repeticiones!</p>
       </div>
+      <!--Contenido de los personal record-->
     </div>
 
-    <div class="objetivos-card">
+    <div class="record-card">
       <div class="encabezado">
         <img src="../assets/logo-dark.png" alt="" height="70" width="70" />
-        <h1>Nuevo Objetivo</h1>
+        <h1>Nuevo Personal Record</h1>
       </div>
-      <form class="formulario-goal">
-        <label for="goalType">Quiero:</label>
-        <select id="goalType" name="goalType">
-          <!--opciones de tipo de objetivo-->
-        </select>
+      <form class="form-record">
+        <label for="weight">Peso:</label>
+        <input type="text" id="weight" name="weight" placeholder="Ingrese una cantidad de peso">
 
-        <label for="weightOrReps">Peso / repeticiones / kilos:</label>
-        <input type="text" id="weightOrReps" name="weightOrReps" placeholder="Ingrese una cantidad">
+        <label for="reps">Repeticiones:</label>
+        <input type="text" id="reps" name="reps" placeholder="Ingrese una cantidad de repeticiones">
 
         <label for="exercise">Ejercicio:</label>
         <select id="exercise" name="exercise">
@@ -40,9 +38,9 @@
     </div>
   </div>
 </template>
-  
+    
 <script>
-import NavBarHome from '../components/NavBarHome.vue';
+import NavBarHome from './NavBarHome.vue';
 import VolverButton from '../buttons/VolverButton.vue';
 import SaveButton from '../buttons/SaveButton.vue';
 
@@ -53,6 +51,9 @@ export default {
     SaveButton
   },
   methods: {
+    goNewGoal() {
+      this.$router.push(`/newobjetivo/${this.userId}`);
+    },
     goGoal() {
       this.$router.push(`/home/${this.userId}`);
     }
@@ -67,9 +68,9 @@ export default {
   }
 }
 </script>
-  
+    
 <style>
-.objetivos-container {
+.record-container {
   display: flex;
   flex-wrap: wrap;
   justify-content: space-around;
@@ -78,7 +79,7 @@ export default {
   height: 75vh;
 }
 
-.objetivo-card {
+.records-card {
   background-color: white;
   flex: 0 0 45%;
   margin: 10px;
@@ -90,7 +91,7 @@ export default {
   flex-direction: column;
 }
 
-.objetivos-card {
+.record-card {
   background-color: white;
   flex: 0 0 45%;
   margin: 10px;
@@ -104,17 +105,13 @@ export default {
 }
 
 @media screen and (min-width: 500px) {
-
-  .objetivos-card,
-  .objetivo-card {
+  .record-card, .records-card {
     flex: 0 0 40%;
   }
 }
 
 @media (max-width: 850px) {
-
-  .objetivos-card,
-  .objetivo-card {
+  .record-card, .records-card {
     flex: 0 0 90%;
   }
 }
@@ -126,20 +123,20 @@ export default {
 }
 
 
-.formulario-goal {
+.form-record {
   display: flex;
   flex-direction: column;
   overflow: auto;
 }
 
-.formulario-goal label {
+.form-record label {
   display: block;
   margin: 10px;
   font-weight: bold;
 }
 
-.formulario-goal input,
-.formulario-goal select {
+.form-record input,
+.form-record select {
   width: 100%;
   padding: 15px;
   margin-bottom: 5px;
@@ -153,5 +150,7 @@ export default {
   justify-content: space-between;
   align-items: center;
   margin-top: 20px;
-}</style>
+}
+</style>
+    
   

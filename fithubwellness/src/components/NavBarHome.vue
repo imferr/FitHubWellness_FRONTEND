@@ -6,7 +6,8 @@
     </div>
     <div class="navbar-links">
       <a href="" @click="goHome()">Inicio</a>
-      <a href="" @click="goGoal()">Objetivos y Personal Record</a>
+      <a href="" @click="goGoal()">Objetivos</a>
+      <a href="" @click="goRecord()">Personal Records</a>
       <a href="" @click="goEvaluation()">Evaluación</a>
       <div class="dropdown">
         <img @click="toggleDropdown" :src="user.picture" alt="User" class="user-photo" />
@@ -46,6 +47,9 @@ export default {
     },
     goGoal() {
       this.$router.push({ name: "objetivos", params: { userId: this.userId } });
+    },
+    goRecord() {
+      this.$router.push({ name: "record", params: { userId: this.userId } });
     },
     goEvaluation() {
       this.$router.push({ name: "newevaluation", params: { userId: this.userId } });

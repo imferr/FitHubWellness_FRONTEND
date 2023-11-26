@@ -5,7 +5,7 @@
       <h1>BIENVENIDO A FITHUB</h1>
       <div class="bienvenido-evaluacion">
         <p>Nueva evaluación</p>
-        <button class="add" type="button" @click="goToNewEvaluation">+</button>
+        <a href="" @click="goToNewEvaluation"><AddButton/></a>
       </div>
     </div>
     <div class="container-home">
@@ -81,9 +81,10 @@ import CheckButton from "../buttons/CheckButton.vue";
 import defaultImage from "../assets/logo-dark.png";
 import { useRouter } from "vue-router";
 import LoadingCircle from "../view/LoadingCircle.vue";
+import AddButton from "@/buttons/AddButton.vue";
 
 export default {
-  components: { NavBarHome, CheckButton, LoadingCircle },
+  components: { NavBarHome, CheckButton, LoadingCircle, AddButton },
   setup() {
     const loading = ref(false);
     const exercises = ref([]);
