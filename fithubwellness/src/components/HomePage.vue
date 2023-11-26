@@ -1,64 +1,73 @@
 <template>
   <NavBarHome />
   <div class="home">
-    <div v-if="loading">Cargando...</div>
-    <div v-else>
-      <div class="bienvenido">
-        <h1>BIENVENIDO A FITHUB</h1>
-        <div class="bienvenido-evaluacion">
-          <p>Nueva evaluación</p>
-          <button class="add" type="button" @click="goToNewEvaluation">
-            +
-          </button>
-        </div>
+    <div class="bienvenido">
+      <h1>BIENVENIDO A FITHUB</h1>
+      <div class="bienvenido-evaluacion">
+        <p>Nueva evaluación</p>
+        <button class="add" type="button" @click="goToNewEvaluation">+</button>
       </div>
-      <div class="container-home">
-        <div class="exercises-left">
+    </div>
+    <div class="container-home">
+      <div class="exercises-left">
+        <div class="static-content">
           <div class="exercise-camp" v-if="showExercises">
-            <button class="volver-button" v-if="showExercises" @click="showExercises = false">Volver</button>
-            <h2>Excercises to {{ selectedBodyPart }}</h2>
+            <button
+              class="volver-button"
+              v-if="showExercises"
+              @click="showExercises = false"
+            >
+              Volver
+            </button>
+            <h2>Exercises to {{ selectedBodyPart }}</h2>
           </div>
           <h2 v-if="!showExercises">¿Qué vas a entrenar hoy?</h2>
-          <div v-if="!showExercises" class="body-parts">
-            <div 
-              v-for="bodyPart in bodyParts" 
-              :key="bodyPart" 
-              class="body-part-card"
-              @click="selectBodyPart(bodyPart)"
-            >
-              <div class="body-part-image">
-                <img :src="getBodyPartImage(bodyPart)" :alt="`${bodyPart}`" />
-              </div>
-              <h3>{{ bodyPart }}</h3>
-            </div>
+        </div>
+        <div class="scrollable-content">
+          <div v-if="loading" class="loading-exercise">
+            <loading-circle></loading-circle>
+            <h2>Cargando ejercicios...</h2>
           </div>
-          <ul v-if="showExercises" class="exercise-list">
-            <li
-              v-for="exercise in filteredExercises"
-              :key="exercise.id"
-              class="exercise-card"
-            >
-              <div class="exercise-icon">
-                <img
-                  :src="exercise.linkPicture || defaultImageUrl"
-                  alt="Exercise Icon"
-                />
-              </div>
-              <div class="exercise-info">
-                <h3>{{ exercise.name }}</h3>
-                <p>{{ exercise.description }}</p>
-                <div class="seleccionar-ejercicio">
-                  <p><b>Seleccionar</b></p>
-                  <CheckButton />
+          <div v-else>
+            <div v-if="!showExercises" class="body-parts">
+              <div
+                v-for="bodyPart in bodyParts"
+                :key="bodyPart"
+                class="body-part-card"
+                @click="selectBodyPart(bodyPart)"
+              >
+                <div class="body-part-image">
+                  <img :src="getBodyPartImage(bodyPart)" :alt="`${bodyPart}`" />
                 </div>
+                <h3>{{ bodyPart }}</h3>
               </div>
-            </li>
-          </ul>
-          <div v-else class="loading"><loading-circle></loading-circle></div>
+            </div>
+            <ul v-if="showExercises" class="exercise-list">
+              <li
+                v-for="exercise in filteredExercises"
+                :key="exercise.id"
+                class="exercise-card"
+              >
+                <div class="exercise-icon">
+                  <img
+                    :src="exercise.linkPicture || defaultImageUrl"
+                    alt="Exercise Icon"
+                  />
+                </div>
+                <div class="exercise-info">
+                  <h3>{{ exercise.name }}</h3>
+                  <p>{{ exercise.description }}</p>
+                  <div class="seleccionar-ejercicio">
+                    <CheckButton />
+                  </div>
+                </div>
+              </li>
+            </ul>
+          </div>
         </div>
-        <div class="chat-right">
-          <h3>Sugerencias</h3>
-        </div>
+      </div>
+      <div class="chat-right">
+        <h3>Sugerencias</h3>
       </div>
     </div>
   </div>
@@ -67,7 +76,6 @@
 <script>
 import axios from "axios";
 import { ref, onMounted, computed } from "vue";
-import { useAuth0 } from "@auth0/auth0-vue";
 import NavBarHome from "../components/NavBarHome.vue";
 import CheckButton from "../buttons/CheckButton.vue";
 import defaultImage from "../assets/logo-dark.png";
@@ -75,16 +83,28 @@ import { useRouter } from "vue-router";
 import LoadingCircle from "../view/LoadingCircle.vue";
 
 export default {
+  components: { NavBarHome, CheckButton, LoadingCircle },
   setup() {
-    const { loading, user } = useAuth0();
+    const loading = ref(false);
     const exercises = ref([]);
     const defaultImageUrl = defaultImage;
-    let userId = null;
-    const router = useRouter();
     const showExercises = ref(false);
     const selectedBodyPart = ref(null);
+    const router = useRouter();
+    let userId = null;
+    const bodyParts = computed(() => [
+      ...new Set(exercises.value.map((exercise) => exercise.bodyPart)),
+    ]);
+    const filteredExercises = computed(() =>
+      selectedBodyPart.value
+        ? exercises.value.filter(
+            (exercise) => exercise.bodyPart === selectedBodyPart.value
+          )
+        : exercises.value
+    );
 
     onMounted(async () => {
+      loading.value = true;
       try {
         const response = await axios.get(
           "http://localhost:8080/api/v1/exercise"
@@ -93,10 +113,10 @@ export default {
           ...exercise,
           linkPicture: exercise.linkPicture || defaultImageUrl,
         }));
-
-        userId = response.data.userId;
       } catch (error) {
         console.error("Error al cargar los ejercicios:", error);
+      } finally {
+        loading.value = false;
       }
     });
 
@@ -104,51 +124,45 @@ export default {
       router.push({ name: "newevaluation", params: { id: userId } });
     };
 
-    const bodyParts = computed(() => [...new Set(exercises.value.map(exercise => exercise.bodyPart))]);
-    const filteredExercises = computed(() => selectedBodyPart.value ? exercises.value.filter(exercise => exercise.bodyPart === selectedBodyPart.value) : exercises.value);
-
     const selectBodyPart = (bodyPart) => {
       selectedBodyPart.value = bodyPart;
       showExercises.value = true;
     };
 
-    const bodyPartImages = {
-      "back": "back.png",
-      "cardio": "cardio.png",
-      "chest": "chest.png",
-      "lower arms": "lower_arms.png",
-      "lower legs": "lower_legs.png",
-      "neck": "neck.png",
-      "shoulders": "shoulders.png",
-      "upper arms": "upper_arms.png",
-      "upper legs": "upper_legs.png",
-      "waist": "waist.png",
-    };
-
     const getBodyPartImage = (bodyPart) => {
-      return require(`@/assets/${bodyPartImages[bodyPart] || 'default.png'}`);
+      const bodyPartImages = {
+        back: "back.png",
+        cardio: "cardio.png",
+        chest: "chest.png",
+        "lower arms": "lower_arms.png",
+        "lower legs": "lower_legs.png",
+        neck: "neck.png",
+        shoulders: "shoulders.png",
+        "upper arms": "upper_arms.png",
+        "upper legs": "upper_legs.png",
+        waist: "waist.png",
+      };
+      return require(`@/assets/${bodyPartImages[bodyPart] || "default.png"}`);
     };
 
     return {
       loading,
-      user,
       exercises,
       defaultImageUrl,
-      userId,
-      goToNewEvaluation,
       showExercises,
       selectedBodyPart,
       bodyParts,
       filteredExercises,
       selectBodyPart,
       getBodyPartImage,
+      goToNewEvaluation,
     };
   },
-  components: { NavBarHome, CheckButton, LoadingCircle },
 };
 </script>
 
 <style>
+
 .bienvenido {
   display: flex;
   flex-direction: space-between;
@@ -180,6 +194,7 @@ export default {
   justify-content: space-between;
   margin: 2rem;
   height: 60vh;
+  overflow: auto;
 }
 
 .exercises-left {
@@ -187,7 +202,14 @@ export default {
   background-color: rgba(255, 255, 255, 0.486);
   border-radius: 20px;
   padding: 15px;
+  display: flex;
+  flex-direction: column;
+  margin-right: 10px;
+}
+
+.scrollable-content {
   overflow: auto;
+  flex-grow: 1;
 }
 
 .chat-right {
@@ -207,18 +229,20 @@ export default {
 }
 
 @media (max-width: 1068px) {
-  .exercise-list {
-    grid-template-columns: 1fr;
-    width: auto;
+  .exercise-list,
+  .body-parts {
+    grid-template-columns: 1fr !important;
   }
 
-  .body-part {
-    grid-template-columns: 1fr;
-    width: 100%;
+  .body-part-card,
+  .exercise-card {
+    width: 90%;
   }
 
+  .chat-right,
   .exercises-left {
-    margin-right: 15px;
+    height: 70vh;
+    margin-bottom: 20px;
   }
 }
 
@@ -236,15 +260,18 @@ export default {
   .container-home {
     flex-direction: column;
     align-items: flex-start;
+    overflow: auto;
   }
 
-  .exercises-left {
+  .exercises-left,
+  .chat-right {
     width: 95%;
-    margin-bottom: 20px;
   }
 
   .chat-right {
-    width: 95%;
+    order: -1;
+    height: auto;
+    min-height: 20vh;
   }
 }
 
@@ -299,15 +326,15 @@ export default {
   justify-content: flex-start;
 }
 
-.loading {
+.loading-exercise {
   display: flex;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
-  height: 70%;
+  height: 100%;
 }
 
 .exercise-camp h2 {
   margin-left: 10px;
 }
-
 </style>

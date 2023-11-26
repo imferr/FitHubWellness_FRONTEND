@@ -5,13 +5,13 @@
       <p>BIENVENIDO A FITHUB WELLNESS</p>
     </div>
     <div class="navbar-links">
-      <a href="/home/:id">INICIO</a>
-      <a href="/objetivos">OBJETIVOS</a>
-      <a href="/historial">HISTORIAL</a>
+      <a href="" @click="goHome()">Inicio</a>
+      <a href="" @click="goGoal()">Objetivos y Personal Record</a>
+      <a href="" @click="goEvaluation()">Evaluación</a>
       <div class="dropdown">
         <img @click="toggleDropdown" :src="user.picture" alt="User" class="user-photo" />
         <div v-if="showDropdown" class="dropdown-content">
-          <a href="/perfil">Ver Perfil</a>
+          <a href="" @click="goPerfil()">Ver Perfil</a>
           <a @click="logout">Logout</a>
         </div>
       </div>
@@ -40,12 +40,25 @@ export default {
   methods: {
     toggleDropdown() {
       this.showDropdown = !this.showDropdown;
-    }
+    },
+    goHome() {
+      this.$router.push({ name: "home", params: { userId: this.userId } });
+    },
+    goGoal() {
+      this.$router.push({ name: "objetivos", params: { userId: this.userId } });
+    },
+    goEvaluation() {
+      this.$router.push({ name: "newevaluation", params: { userId: this.userId } });
+    },
+    goPerfil() {
+      this.$router.push({ name: "perfil", params: { userId: this.userId } });
+    },
   }
 };
 </script>
 
 <style>
+
 .navbar-login {
   display: flex;
   justify-content: space-between;
@@ -83,7 +96,7 @@ export default {
 }
 
 .navbar-links a {
-  margin-right: 15px;
+  margin-right: 40px;
   color: white;
   text-decoration: none;
 }

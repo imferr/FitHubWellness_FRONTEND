@@ -33,6 +33,8 @@ export default {
   flex-wrap: wrap;
   justify-content: space-around;
   margin: 2% 5%;
+  overflow: auto;
+  height: 75vh;
 }
 
 .objetivos-card {
@@ -46,10 +48,15 @@ export default {
   border-radius: 20px;
 }
 
-@media (max-width: 500px) {
+@media screen and (min-width: 500px) {
+  .objetivos-card {
+    flex: 0 0 40%;
+  }
+}
+
+@media (max-width: 850px) {
   .objetivos-card {
     flex: 0 0 90%;
-    height: auto;
   }
 }
 
