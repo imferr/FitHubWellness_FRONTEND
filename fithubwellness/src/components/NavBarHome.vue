@@ -58,6 +58,7 @@ export default {
 </script>
 
 <style>
+
 .navbar-login {
   display: flex;
   justify-content: space-between;

@@ -162,6 +162,7 @@ export default {
 </script>
 
 <style>
+
 .bienvenido {
   display: flex;
   flex-direction: space-between;
@@ -193,6 +194,7 @@ export default {
   justify-content: space-between;
   margin: 2rem;
   height: 60vh;
+  overflow: auto;
 }
 
 .exercises-left {
@@ -202,9 +204,7 @@ export default {
   padding: 15px;
   display: flex;
   flex-direction: column;
-}
-
-.static-content {
+  margin-right: 10px;
 }
 
 .scrollable-content {
@@ -229,18 +229,20 @@ export default {
 }
 
 @media (max-width: 1068px) {
-  .exercise-list {
-    grid-template-columns: 1fr;
-    width: auto;
+  .exercise-list,
+  .body-parts {
+    grid-template-columns: 1fr !important;
   }
 
-  .body-part {
-    grid-template-columns: 1fr;
-    width: 100%;
+  .body-part-card,
+  .exercise-card {
+    width: 90%;
   }
 
+  .chat-right,
   .exercises-left {
-    margin-right: 15px;
+    height: 70vh;
+    margin-bottom: 20px;
   }
 }
 
@@ -258,15 +260,18 @@ export default {
   .container-home {
     flex-direction: column;
     align-items: flex-start;
+    overflow: auto;
   }
 
-  .exercises-left {
+  .exercises-left,
+  .chat-right {
     width: 95%;
-    margin-bottom: 20px;
   }
 
   .chat-right {
-    width: 95%;
+    order: -1;
+    height: auto;
+    min-height: 20vh;
   }
 }
 

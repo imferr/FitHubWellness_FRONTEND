@@ -148,6 +148,8 @@ export default {
   flex-wrap: wrap;
   justify-content: space-around;
   margin: 2% 5%;
+  height: 75vh;
+  overflow: auto;
 }
 
 .evaluation,
@@ -172,6 +174,7 @@ export default {
 .formulario-evaluation-salida {
   display: flex;
   flex-direction: column;
+  overflow: auto;
 }
 
 .formulario-evaluation label,
@@ -222,14 +225,11 @@ export default {
   margin-bottom: 20px;
 }
 
-@media (max-width: 500px) {
+@media (max-width: 700px) {
   .evaluation,
   .evaluation-actual {
     flex: 0 0 90%;
   }
 }
 
-.formulario-evaluation-salida {
-  overflow: auto;
-}
 </style>
