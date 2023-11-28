@@ -8,20 +8,9 @@
       </div>
       <form class="formulario-evaluation" @submit.prevent="submitEvaluation">
         <label for="weight">Peso (kg):</label>
-        <input
-          type="number"
-          id="weight"
-          v-model.number="weight"
-          step="any"
-          placeholder="Ingrese su peso en kilogramos"
-        />
+        <input type="number" id="weight" v-model.number="weight" step="any" placeholder="Ingrese su peso en kilogramos" min="1" />
         <label for="height">Altura (cm):</label>
-        <input
-          type="number"
-          id="height"
-          v-model.number="height"
-          placeholder="Ingrese su altura en centímetros"
-        />
+        <input type="number" id="height" v-model.number="height" placeholder="Ingrese su altura en centímetros" min="1" />
         <div class="save-data">
           <button class="save-button" type="submit">GUARDAR</button>
           <button class="volver-button" type="button" @click="goHome">
@@ -35,32 +24,14 @@
         <img src="../assets/logo-dark.png" alt="" height="70" width="70" />
         <h1>Evaluación Actual</h1>
       </div>
-      <form
-        class="formulario-evaluation-salida"
-        @submit.prevent="submitEvaluation"
-      >
-        <label for="height">Última actualización:</label>
-        <input type="date" id="lastUpdate" placeholder="Última actualización" />
-        <label for="weight">Peso (kg):</label>
-        <input
-          type="number"
-          id="weight"
-          placeholder="Ingrese su peso en kilogramos"
-        />
-        <label for="height">Altura (cm):</label>
-        <input
-          type="number"
-          id="height"
-          placeholder="Ingrese su altura en centímetros"
-        />
-        <label for="height">Índice de masa corporal (IMC):</label>
-        <input
-          type="number"
-          id="imc"
-          placeholder="Su índice de masa corporal"
-        />
-        <label for="height">Estado (IMC):</label>
-        <input type="text" id="estado" placeholder="Su estado según el IMC" />
+      <form class="formulario-evaluation-salida">
+        <p><strong>Última actualización: </strong>{{ lastUpdate }}</p>
+        <p><strong>Peso: </strong>{{ weight1 }} kg</p>
+        <p><strong>Altura: </strong>{{ height1 }} cm</p>
+        <label for="imc">Índice de masa corporal (IMC):</label>
+        <input type="number" id="imc" v-model="imc" readonly />
+        <label for="estado">Estado (IMC):</label>
+        <input type="text" id="estado" v-model="estado" readonly />
       </form>
     </div>
   </div>
@@ -80,10 +51,14 @@ export default {
       weight: "",
       height: "",
       userId: null,
+      lastUpdate: "",
+      imc: "",
+      estado: ""
     };
   },
   mounted() {
     this.userId = this.$route.params.id;
+    this.getEvaluationData();
   },
   methods: {
     async submitEvaluation() {
@@ -101,6 +76,7 @@ export default {
           "La evaluación se ha actualizado correctamente.",
           "success"
         );
+        this.getEvaluationData();
       } catch (error) {
         Swal.fire(
           "Error",
@@ -123,12 +99,12 @@ export default {
       if (
         this.weight < 20 ||
         this.weight > 300 ||
-        this.height < 120 ||
-        this.height > 250
+        this.height < 100 ||
+        this.height > 300
       ) {
         Swal.fire(
           "Error",
-          "El peso y la altura deben estar en un rango válido.",
+          "El peso y la altura deben estar en un rango válido (peso: 20-300, altura: 100-300).",
           "error"
         );
         return false;
@@ -138,6 +114,22 @@ export default {
     goHome() {
       this.$router.push({ name: "home", params: { userId: this.userId } });
     },
+    async getEvaluationData() {
+      try {
+        const response = await axios.get(`http://localhost:8080/api/v1/evaluation/user/${this.userId}`);
+        this.updateFormData(response.data);
+      } catch (error) {
+        console.error("Error al obtener los datos de la evaluación:", error);
+        Swal.fire("Error", "No se pudieron obtener los datos de la evaluación.", "error");
+      }
+    },
+    updateFormData(evaluation) {
+      this.lastUpdate = evaluation.date;
+      this.weight1 = evaluation.weight;
+      this.height1 = evaluation.height;
+      this.imc = evaluation.imc;
+      this.estado = evaluation.state;
+    }
   },
 };
 </script>
@@ -184,6 +176,10 @@ export default {
   font-weight: bold;
 }
 
+.formulario-evaluation-salida p {
+  margin: 10px;
+}
+
 .formulario-evaluation input,
 .formulario-evaluation-salida input {
   width: 100%;
@@ -202,6 +198,7 @@ export default {
 }
 
 @media screen and (min-width: 500px) {
+
   .evaluation,
   .evaluation-actual {
     flex: 0 0 40%;
@@ -226,10 +223,10 @@ export default {
 }
 
 @media (max-width: 700px) {
+
   .evaluation,
   .evaluation-actual {
     flex: 0 0 90%;
   }
 }
-
 </style>
