@@ -15,9 +15,11 @@
         <h1>Nuevo Objetivo</h1>
       </div>
       <form class="formulario-goal">
-        <label for="goalType">Quiero:</label>
-        <select id="goalType" name="goalType">
-          <!--opciones de tipo de objetivo-->
+        <label for="typegoal">Quiero:</label>
+        <select id="typegoal" name="typegoal">
+          <option v-for="typegoal in typeGoalList" :key="typegoal.typeGoal" :value="typegoal.typeGoal">
+            {{ typegoal.typeGoal }}
+          </option>
         </select>
 
         <label for="weightOrReps">Peso / repeticiones / kilos:</label>
@@ -25,7 +27,9 @@
 
         <label for="exercise">Ejercicio:</label>
         <select id="exercise" name="exercise">
-          <!-- Add more <option> tags here for each exercise -->
+          <option v-for="exercise in exerciseList" :key="exercise.name" :value="exercise.name">
+            {{ exercise.name }}
+          </option>
         </select>
 
         <div class="save-data">
@@ -42,6 +46,7 @@
 </template>
   
 <script>
+import axios from 'axios';
 import NavBarHome from '../components/NavBarHome.vue';
 import VolverButton from '../buttons/VolverButton.vue';
 import SaveButton from '../buttons/SaveButton.vue';
@@ -55,15 +60,35 @@ export default {
   methods: {
     goGoal() {
       this.$router.push(`/home/${this.userId}`);
+    },
+    async getExerciseList() {
+      try {
+        const response = await axios.get('http://localhost:8080/api/v1/exercise');
+        this.exerciseList = response.data;
+      } catch (error) {
+        console.error('Error al obtener la lista de ejercicios', error);
+      }
+    },
+    async getTypeGoalList() {
+      try {
+        const response = await axios.get('http://localhost:8080/api/v1/typegoal');
+        this.typeGoalList = response.data;
+      } catch (error) {
+        console.error('Error al obtener la lista de tipos de objetivos', error);
+      }
     }
   },
   data() {
     return {
-      userId: null
-    }
+      userId: null,
+      typeGoalList: [],
+      exerciseList: []
+    };
   },
   mounted() {
     this.userId = this.$route.params.id;
+    this.getExerciseList();
+    this.getTypeGoalList();
   }
 }
 </script>
@@ -153,5 +178,5 @@ export default {
   justify-content: space-between;
   align-items: center;
   margin-top: 20px;
-}</style>
-  
+}
+</style>
