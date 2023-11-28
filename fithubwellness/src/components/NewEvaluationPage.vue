@@ -8,9 +8,9 @@
       </div>
       <form class="formulario-evaluation" @submit.prevent="submitEvaluation">
         <label for="weight">Peso (kg):</label>
-        <input type="number" id="weight" v-model.number="weight" step="any" placeholder="Ingrese su peso en kilogramos" />
+        <input type="number" id="weight" v-model.number="weight" step="any" placeholder="Ingrese su peso en kilogramos" min="1" />
         <label for="height">Altura (cm):</label>
-        <input type="number" id="height" v-model.number="height" placeholder="Ingrese su altura en centímetros" />
+        <input type="number" id="height" v-model.number="height" placeholder="Ingrese su altura en centímetros" min="1" />
         <div class="save-data">
           <button class="save-button" type="submit">GUARDAR</button>
           <button class="volver-button" type="button" @click="goHome">

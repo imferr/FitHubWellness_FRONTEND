@@ -44,10 +44,11 @@
 
         <label for="weightOrReps">Peso / repeticiones / kilos:</label>
         <input v-model.number="quantity" type="number" id="weightOrReps" name="weightOrReps" step="any"
-          placeholder="Ingrese una cantidad">
+          placeholder="Ingrese una cantidad" min="1">
 
-        <label for="exercise">Ejercicio:</label>
-        <select v-model="selectedExerciseName" id="exercise" name="exercise">
+        <label for="exercise" :class="{ 'label-disabled': selectedTypeGoalId === 3 }">Ejercicio:</label>
+        <select v-model="selectedExerciseName" id="exercise" name="exercise" :disabled="selectedTypeGoalId === 3">
+          <option disabled value="" v-if="selectedTypeGoalId === 3">Deshabilitado</option>
           <option v-for="exercise in exerciseList" :key="exercise.name" :value="exercise.name">
             {{ exercise.name }}
           </option>
@@ -85,7 +86,7 @@ export default {
       quantity: null,
       goals: [],
       completedGoals: [],
-      uncompletedGoals: [],
+      uncompletedGoals: []
     };
   },
   mounted() {
@@ -94,21 +95,47 @@ export default {
     this.getTypeGoalList();
     this.fetchGoals();
   },
+  watch: {
+    selectedTypeGoalId(newVal) {
+      if (newVal === 2 && this.quantity) {
+        this.quantity = Math.floor(this.quantity);
+      }
+    },
+    quantity(newVal) {
+      if (this.selectedTypeGoalId === 2) {
+        if (isNaN(parseFloat(newVal))) {
+          this.quantity = '';
+        } else {
+          this.quantity = Math.floor(newVal);
+        }
+      }
+    }
+  },
   methods: {
     async submitGoal() {
       if (!this.validateFields()) {
         return;
       }
+      Swal.fire({
+        title: 'Registrando objetivo...',
+        onBeforeOpen: () => {
+          Swal.showLoading()
+        },
+        allowOutsideClick: () => !Swal.isLoading(),
+        showConfirmButton: false
+      });
       try {
         const goalData = {
           quantity: this.quantity,
-          exerciseName: this.selectedExerciseName,
+          exerciseName: this.selectedExerciseName
         };
         const url = `http://localhost:8080/api/v1/goal/create/user/${this.userId}/typeGoal/${this.selectedTypeGoalId}`;
         await axios.post(url, goalData);
+        this.fetchGoals();
         Swal.fire({
           icon: 'success',
           title: '¡Objetivo creado con éxito!',
+          text: 'El objetivo se ha registrado correctamente, se encuentra al final de la lista Objetivos por Cumplir.',
           showConfirmButton: false,
           timer: 1500
         });
@@ -116,7 +143,7 @@ export default {
         Swal.fire({
           icon: 'error',
           title: 'Error al crear el objetivo',
-          text: 'Ocurrió un problema al procesar la solicitud. Inténtelo de nuevo.',
+          text: 'Ocurrió un problema al procesar la solicitud. Inténtelo de nuevo.'
         });
       }
     },
@@ -150,7 +177,23 @@ export default {
       this.uncompletedGoals = this.goals.filter(goal => !goal.accomplished);
     },
     validateFields() {
-      return this.selectedTypeGoalId && this.quantity && this.selectedExerciseName;
+      if (!this.selectedTypeGoalId || !this.quantity || (this.selectedTypeGoalId !== 3 && !this.selectedExerciseName)) {
+        Swal.fire({
+          icon: 'error',
+          title: 'Error',
+          text: 'Todos los campos deben ser llenados'
+        });
+        return false;
+      }
+      if (this.quantity <= 0) {
+        Swal.fire({
+          icon: 'error',
+          title: 'Error',
+          text: 'La cantidad debe ser mayor a 0'
+        });
+        return false;
+      }
+      return true;
     }
   }
 };
@@ -253,4 +296,19 @@ export default {
   justify-content: space-between;
   align-items: center;
   margin-top: 20px;
-}</style>
+}
+
+.label-disabled {
+  opacity: 0.5;
+}
+
+#exercise:disabled {
+  background-color: #e9ecef;
+  color: #6c757d;
+}
+
+#exercise:disabled::placeholder {
+  color: #6c757d;
+}
+
+</style>

@@ -10,10 +10,10 @@
     </p>
     <form class="form-firstevaluation">
       <label for="weight">Peso (kg):</label>
-      <input type="number" id="weight" name="weight" v-model="weight" placeholder="Ingrese su peso en kilogramos" />
+      <input type="number" id="weight" name="weight" v-model="weight" placeholder="Ingrese su peso en kilogramos" min="1" />
 
       <label for="height">Altura (cm):</label>
-      <input type="number" id="height" name="height" v-model="height" placeholder="Ingrese su altura en centímetros" />
+      <input type="number" id="height" name="height" v-model="height" placeholder="Ingrese su altura en centímetros" min="1" />
 
       <label for="birthday">Cumpleaños:</label>
       <input type="date" id="birthday" name="birthday" v-model="birthday" />
