@@ -6,67 +6,138 @@
         <h1>Personal Record</h1>
         <p>Registra tus mejores marcas, pesos y repeticiones!</p>
       </div>
-      <!--Contenido de los personal record-->
+      <div v-for="record in personalRecords" :key="record.personalRecordId" class="record">
+        <div v-if="editingRecordId !== record.personalRecordId">
+          <p>- Peso: {{ record.weight }} kg; Repeticiones: {{ record.repetitions }}; Ejercicio: {{ record.exerciseName }}
+          </p>
+          <button @click="startEditing(record)">Editar</button>
+        </div>
+        <div v-else>
+          <input v-model="editedRecord.weight" type="number" placeholder="Peso">
+          <input v-model="editedRecord.repetitions" type="number" placeholder="Repeticiones">
+          <select v-model="editedRecord.exerciseName">
+            <option v-for="exercise in exerciseList" :key="exercise.name" :value="exercise.name">
+              {{ exercise.name }}
+            </option>
+          </select>
+          <button @click="updateRecord">Guardar</button>
+          <button @click="cancelEditing">Cancelar</button>
+        </div>
+      </div>
     </div>
-
     <div class="record-card">
       <div class="encabezado">
         <img src="../assets/logo-dark.png" alt="" height="70" width="70" />
         <h1>Nuevo Personal Record</h1>
       </div>
-      <form class="form-record">
+      <form class="form-record" @submit.prevent="createPersonalRecord">
         <label for="weight">Peso:</label>
-        <input type="text" id="weight" name="weight" placeholder="Ingrese una cantidad de peso">
-
+        <input v-model.number="newRecord.weight" type="number" id="weight" name="weight" step="0.01"
+          placeholder="Ingrese una cantidad de peso" min="1">
         <label for="reps">Repeticiones:</label>
-        <input type="text" id="reps" name="reps" placeholder="Ingrese una cantidad de repeticiones">
-
+        <input v-model.number="newRecord.repetitions" type="number" id="reps" name="reps" step="1"
+          placeholder="Ingrese una cantidad de repeticiones" min="1">
         <label for="exercise">Ejercicio:</label>
-        <select id="exercise" name="exercise">
-          <!-- Add more <option> tags here for each exercise -->
+        <select v-model="newRecord.exerciseName" id="exercise" name="exercise">
+          <option v-for="exercise in exerciseList" :key="exercise.name" :value="exercise.name">
+            {{ exercise.name }}
+          </option>
         </select>
-
         <div class="save-data">
-          <router-link to="/">
-            <SaveButton />
-          </router-link>
-          <a href="" @click="goGoal()">
-            <VolverButton />
-          </a>
+          <button type="submit">Guardar</button>
+          <VolverButton />
         </div>
       </form>
     </div>
   </div>
 </template>
-    
+
 <script>
 import NavBarHome from './NavBarHome.vue';
 import VolverButton from '../buttons/VolverButton.vue';
-import SaveButton from '../buttons/SaveButton.vue';
+import axios from 'axios';
+import Swal from 'sweetalert2';
 
 export default {
   components: {
     NavBarHome,
-    VolverButton,
-    SaveButton
-  },
-  methods: {
-    goNewGoal() {
-      this.$router.push(`/newobjetivo/${this.userId}`);
-    },
-    goGoal() {
-      this.$router.push(`/home/${this.userId}`);
-    }
+    VolverButton
   },
   data() {
     return {
-      userId: null
-    }
+      userId: null,
+      personalRecords: [],
+      editingRecordId: null,
+      editedRecord: null,
+      newRecord: {
+        weight: null,
+        repetitions: null,
+        exerciseName: ''
+      },
+      exerciseList: []
+    };
   },
   mounted() {
     this.userId = this.$route.params.id;
+    this.fetchPersonalRecords();
+    this.getExerciseList();
+  },
+  methods: {
+    fetchPersonalRecords() {
+      axios.get(`http://localhost:8080/api/v1/personalrecord/user/${this.userId}`)
+        .then(response => {
+          this.personalRecords = response.data;
+        });
+    },
+    getExerciseList() {
+      axios.get('http://localhost:8080/api/v1/exercise')
+        .then(response => {
+          this.exerciseList = response.data;
+        });
+    },
+    createPersonalRecord() {
+      if (this.newRecord.weight && this.newRecord.repetitions) {
+        axios.post(`http://localhost:8080/api/v1/personalrecord/create/user/${this.userId}`, this.newRecord)
+          .then(() => {
+            this.fetchPersonalRecords();
+            this.newRecord.weight = null;
+            this.newRecord.repetitions = null;
+            this.newRecord.exerciseName = '';
+            Swal.fire('Registro Exitoso', 'Personal Record creado con éxito', 'success');
+          });
+      } else {
+        Swal.fire('Error', 'Por favor ingrese peso y repeticiones válidos', 'error');
+      }
+    },
+    startEditing(record) {
+      this.editedRecord = JSON.parse(JSON.stringify(record));
+      this.editingRecordId = record.personalRecordId;
+    },
+    updateRecord() {
+      if (this.editingRecordId) {
+        axios.put(`http://localhost:8080/api/v1/personalrecord/user/${this.userId}/update/${this.editingRecordId}`, this.editedRecord)
+          .then(() => {
+            const index = this.personalRecords.findIndex(record => record.personalRecordId === this.editingRecordId);
+            if (index !== -1) {
+              this.personalRecords.splice(index, 1, this.editedRecord);
+            }
+            this.editingRecordId = null;
+            this.editedRecord = null;
+            Swal.fire('Actualizado', 'El registro ha sido actualizado con éxito', 'success');
+          })
+          .catch(error => {
+            Swal.fire('Error', `No se pudo actualizar el registro: ${error.message}`, 'error');
+          });
+      } else {
+        Swal.fire('Error', 'El ID del registro no está definido', 'error');
+      }
+    },
+    cancelEditing() {
+      this.editingRecordId = null;
+      this.editedRecord = null;
+    }
   }
-}
+};
 </script>
     
 <style>
@@ -105,13 +176,17 @@ export default {
 }
 
 @media screen and (min-width: 500px) {
-  .record-card, .records-card {
+
+  .record-card,
+  .records-card {
     flex: 0 0 40%;
   }
 }
 
 @media (max-width: 850px) {
-  .record-card, .records-card {
+
+  .record-card,
+  .records-card {
     flex: 0 0 90%;
   }
 }
