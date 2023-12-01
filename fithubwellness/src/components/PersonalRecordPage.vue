@@ -8,7 +8,7 @@
       </div>
       <div v-for="record in personalRecords" :key="record.personalRecordId" class="record">
         <div v-if="editingRecordId !== record.personalRecordId">
-          <p>- Peso: {{ record.weight }} kg; Repeticiones: {{ record.repetitions }}; Ejercicio: {{ record.exerciseName }}
+          <p>- Peso: {{ record.weight }} kg; Repeticiones: {{ record.repetitions }}; Ejercicio: {{ record.exerciseName }}; Registrado el: {{ record.date }}
           </p>
           <button @click="startEditing(record)">Editar</button>
         </div>
@@ -98,11 +98,11 @@ export default {
         });
     },
     createPersonalRecord() {
-      if (this.newRecord.weight && this.newRecord.repetitions) {
+      if (this.newRecord.weight && this.newRecord.repetitions && this.newRecord.exerciseName) {
         Swal.fire({
           title: 'Registrando personal record...',
           onBeforeOpen: () => {
-            Swal.showLoading()
+            Swal.showLoading();
           },
           allowOutsideClick: () => !Swal.isLoading(),
           showConfirmButton: false
@@ -111,16 +111,13 @@ export default {
           .then(() => {
             Swal.close();
             this.fetchPersonalRecords();
-            this.newRecord.weight = null;
-            this.newRecord.repetitions = null;
-            this.newRecord.exerciseName = '';
             Swal.fire('Registro Exitoso', 'Personal Record creado con éxito', 'success');
-          }).catch(() => {
+          }).catch(error => {
             Swal.close();
-            Swal.fire('Error', 'Por favor ingrese peso y repeticiones válidos', 'error');
+            Swal.fire('Error', error.response.data || 'No se pudo crear el registro', 'error');
           });
       } else {
-        Swal.fire('Error', 'Por favor ingrese peso y repeticiones válidos', 'error');
+        Swal.fire('Error', 'Por favor ingrese todos los campos requeridos', 'error');
       }
     },
     startEditing(record) {
@@ -140,16 +137,13 @@ export default {
         axios.put(`http://localhost:8080/api/v1/personalrecord/user/${this.userId}/update/${this.editingRecordId}`, this.editedRecord)
           .then(() => {
             Swal.close();
-            const index = this.personalRecords.findIndex(record => record.personalRecordId === this.editingRecordId);
-            if (index !== -1) {
-              this.personalRecords.splice(index, 1, this.editedRecord);
-            }
+            this.fetchPersonalRecords();
             this.editingRecordId = null;
             this.editedRecord = null;
             Swal.fire('Actualizado', 'El registro ha sido actualizado con éxito', 'success');
           }).catch(error => {
             Swal.close();
-            Swal.fire('Error', `No se pudo actualizar el registro: ${error.message}`, 'error');
+            Swal.fire('Error', error.response.data || 'No se pudo actualizar el registro', 'error');
           });
       } else {
         Swal.fire('Error', 'El ID del registro no está definido', 'error');
@@ -252,32 +246,32 @@ export default {
 
 
 .save-button {
-    font-weight: bold;
-    background-color: black;
-    border: 2px solid white;
-    color: white;
-    padding: 10px;
-    border-radius: 10px;
-    margin: 5px;
-    cursor: pointer;
+  font-weight: bold;
+  background-color: black;
+  border: 2px solid white;
+  color: white;
+  padding: 10px;
+  border-radius: 10px;
+  margin: 5px;
+  cursor: pointer;
 }
 
 .save-button a {
-    color: white;
-    text-decoration: none;
+  color: white;
+  text-decoration: none;
 }
 
 .save-button:hover {
-    border: 2px solid black;
-    background-color: white;
-    color: black;
-    scale: 1.1;
-    transition: 0.5s;
+  border: 2px solid black;
+  background-color: white;
+  color: black;
+  scale: 1.1;
+  transition: 0.5s;
 }
 
 .save-button:hover a {
-    color: black;
-    text-decoration: none;
+  color: black;
+  text-decoration: none;
 }
 </style>
     
