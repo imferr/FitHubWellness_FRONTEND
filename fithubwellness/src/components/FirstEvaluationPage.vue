@@ -10,10 +10,12 @@
     </p>
     <form class="form-firstevaluation">
       <label for="weight">Peso (kg):</label>
-      <input type="number" id="weight" name="weight" v-model="weight" placeholder="Ingrese su peso en kilogramos" min="1" />
+      <input type="number" id="weight" name="weight" v-model="weight" placeholder="Ingrese su peso en kilogramos"
+        min="1" />
 
       <label for="height">Altura (cm):</label>
-      <input type="number" id="height" name="height" v-model="height" placeholder="Ingrese su altura en centímetros" min="1" />
+      <input type="number" id="height" name="height" v-model="height" placeholder="Ingrese su altura en centímetros"
+        min="1" />
 
       <label for="birthday">Cumpleaños:</label>
       <input type="date" id="birthday" name="birthday" v-model="birthday" />
@@ -124,12 +126,19 @@ export default {
           requestData
         )
         .then((response) => {
-          Swal.fire(
-            "¡Listo!",
-            "Tu usuario y evaluación han sido creados",
-            "success"
-          );
-          router.push({ name: "home", params: { id: response.data.userId } });
+          Swal.fire({
+            title: '¿Qué vas a entrenar hoy?',
+            showDenyButton: true,
+            confirmButtonText: 'Tren Superior',
+            denyButtonText: 'Tren Inferior',
+          }).then((result) => {
+            if (result.isConfirmed) {
+              postTrainingType(response.data.userId, 1);
+            } else if (result.isDenied) {
+              postTrainingType(response.data.userId, 2);
+            }
+          });
+          router.push({ name: 'home', params: { id: response.data.userId } });
         })
         .catch((error) => {
           Swal.fire(
@@ -140,10 +149,32 @@ export default {
         });
     };
 
+    const postTrainingType = (userId, typeTrainingId) => {
+      const requestBody = {
+        userId: userId,
+        typeTrainingId: typeTrainingId
+      };
+      axios.post('http://localhost:8080/api/v1/dailytraining/create', requestBody)
+        .then(() => {
+          Swal.fire(
+            '¡Entrenamiento Registrado, Bienvenido!',
+            'Tu entrenamiento ha sido registrado con éxito.',
+            'success'
+          );
+        })
+        .catch(error => {
+          Swal.fire(
+            'Error',
+            'Hubo un problema al registrar el entrenamiento: ' + error.message,
+            'error'
+          );
+        });
+    };
     return { weight, height, birthday, submitForm };
   },
 };
 </script>
+
 
 <style>
 .first-evaluation {

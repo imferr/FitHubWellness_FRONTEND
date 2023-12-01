@@ -5,19 +5,22 @@
       <div>
         <h1>Objetivos</h1>
         <h3>Objetivos Cumplidos</h3>
-        <ul>
+        <ul v-if="completedGoals.length > 0">
           <li v-for="goal in completedGoals" :key="goal.goalId">
             • {{ goal.typeGoalId.typeGoal }} ({{ goal.quantity }} <span
               v-if="goal.typeGoalId.typeGoalId === 1 || goal.typeGoalId.typeGoalId === 3">Kg</span><span
               v-else-if="goal.typeGoalId.typeGoalId === 2">Reps</span>) <span v-if="goal.typeGoalId.typeGoalId !== 3">en
-              {{ goal.exerciseName }}</span><span>, lo cumpliste el <b>{{ goal.accomplishedDate }}</b></span>
+              {{ goal.exerciseName }}</span>
           </li>
         </ul>
+        <div v-else>
+          <p>No tienes objetivos cumplidos</p>
+        </div>
       </div>
       <div>
         <h3>Objetivos por Cumplir</h3>
         <div class="goalFalse">
-          <ul>
+          <ul v-if="uncompletedGoals.length > 0">
             <li v-for="goal in uncompletedGoals" :key="goal.goalId">
               • {{ goal.typeGoalId.typeGoal }} ({{ goal.quantity }} <span
                 v-if="goal.typeGoalId.typeGoalId === 1 || goal.typeGoalId.typeGoalId === 3">Kg</span><span
@@ -25,6 +28,9 @@
                 {{ goal.exerciseName }}</span><span>, te lo propusiste el <b>{{ goal.date }}</b></span>
             </li>
           </ul>
+          <div v-else>
+            <p>No tienes objetivos por cumplir</p>
+          </div>
         </div>
       </div>
     </div>
@@ -343,5 +349,4 @@ export default {
 .save-button:hover a {
   color: black;
   text-decoration: none;
-}
-</style>
+}</style>
