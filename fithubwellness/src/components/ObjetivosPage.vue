@@ -10,7 +10,7 @@
             • {{ goal.typeGoalId.typeGoal }} ({{ goal.quantity }} <span
               v-if="goal.typeGoalId.typeGoalId === 1 || goal.typeGoalId.typeGoalId === 3">Kg</span><span
               v-else-if="goal.typeGoalId.typeGoalId === 2">Reps</span>) <span v-if="goal.typeGoalId.typeGoalId !== 3">en
-              {{ goal.exerciseName }}</span>
+              {{ goal.exerciseName }}</span><span>, lo cumpliste el <b>{{ goal.accomplishedDate }}</b></span>
           </li>
         </ul>
       </div>
@@ -22,7 +22,7 @@
               • {{ goal.typeGoalId.typeGoal }} ({{ goal.quantity }} <span
                 v-if="goal.typeGoalId.typeGoalId === 1 || goal.typeGoalId.typeGoalId === 3">Kg</span><span
                 v-else-if="goal.typeGoalId.typeGoalId === 2">Reps</span>) <span v-if="goal.typeGoalId.typeGoalId !== 3">en
-                {{ goal.exerciseName }}</span>
+                {{ goal.exerciseName }}</span><span>, te lo propusiste el <b>{{ goal.date }}</b></span>
             </li>
           </ul>
         </div>
@@ -140,10 +140,14 @@ export default {
           timer: 1500
         });
       } catch (error) {
+        let errorMessage = 'Ocurrió un error inesperado. Intente nuevamente más tarde.';
+        if (error.response && error.response.data && typeof error.response.data === 'string') {
+          errorMessage = error.response.data;
+        }
         Swal.fire({
           icon: 'error',
           title: 'Error al crear el objetivo',
-          text: 'Ocurrió un problema al procesar la solicitud. Inténtelo de nuevo.'
+          text: errorMessage
         });
       }
     },
@@ -311,4 +315,33 @@ export default {
   color: #6c757d;
 }
 
+
+.save-button {
+  font-weight: bold;
+  background-color: black;
+  border: 2px solid white;
+  color: white;
+  padding: 10px;
+  border-radius: 10px;
+  margin: 5px;
+  cursor: pointer;
+}
+
+.save-button a {
+  color: white;
+  text-decoration: none;
+}
+
+.save-button:hover {
+  border: 2px solid black;
+  background-color: white;
+  color: black;
+  scale: 1.1;
+  transition: 0.5s;
+}
+
+.save-button:hover a {
+  color: black;
+  text-decoration: none;
+}
 </style>
