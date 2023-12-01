@@ -20,8 +20,8 @@
               {{ exercise.name }}
             </option>
           </select>
-          <button @click="updateRecord">Guardar</button>
-          <button @click="cancelEditing">Cancelar</button>
+          <button class="save-button" @click="updateRecord">GUARDAR</button>
+          <button class="save-button" @click="cancelEditing">Cancelar</button>
         </div>
       </div>
     </div>
@@ -44,8 +44,10 @@
           </option>
         </select>
         <div class="save-data">
-          <button type="submit">Guardar</button>
-          <VolverButton />
+          <button class="save-button" type="submit">GUARDAR</button>
+          <router-link to="/">
+            <VolverButton />
+          </router-link>
         </div>
       </form>
     </div>
@@ -97,13 +99,25 @@ export default {
     },
     createPersonalRecord() {
       if (this.newRecord.weight && this.newRecord.repetitions) {
+        Swal.fire({
+          title: 'Registrando personal record...',
+          onBeforeOpen: () => {
+            Swal.showLoading()
+          },
+          allowOutsideClick: () => !Swal.isLoading(),
+          showConfirmButton: false
+        });
         axios.post(`http://localhost:8080/api/v1/personalrecord/create/user/${this.userId}`, this.newRecord)
           .then(() => {
+            Swal.close();
             this.fetchPersonalRecords();
             this.newRecord.weight = null;
             this.newRecord.repetitions = null;
             this.newRecord.exerciseName = '';
             Swal.fire('Registro Exitoso', 'Personal Record creado con éxito', 'success');
+          }).catch(() => {
+            Swal.close();
+            Swal.fire('Error', 'Por favor ingrese peso y repeticiones válidos', 'error');
           });
       } else {
         Swal.fire('Error', 'Por favor ingrese peso y repeticiones válidos', 'error');
@@ -115,8 +129,17 @@ export default {
     },
     updateRecord() {
       if (this.editingRecordId) {
+        Swal.fire({
+          title: 'Actualizando personal record...',
+          onBeforeOpen: () => {
+            Swal.showLoading()
+          },
+          allowOutsideClick: () => !Swal.isLoading(),
+          showConfirmButton: false
+        });
         axios.put(`http://localhost:8080/api/v1/personalrecord/user/${this.userId}/update/${this.editingRecordId}`, this.editedRecord)
           .then(() => {
+            Swal.close();
             const index = this.personalRecords.findIndex(record => record.personalRecordId === this.editingRecordId);
             if (index !== -1) {
               this.personalRecords.splice(index, 1, this.editedRecord);
@@ -124,8 +147,8 @@ export default {
             this.editingRecordId = null;
             this.editedRecord = null;
             Swal.fire('Actualizado', 'El registro ha sido actualizado con éxito', 'success');
-          })
-          .catch(error => {
+          }).catch(error => {
+            Swal.close();
             Swal.fire('Error', `No se pudo actualizar el registro: ${error.message}`, 'error');
           });
       } else {
@@ -225,6 +248,36 @@ export default {
   justify-content: space-between;
   align-items: center;
   margin-top: 20px;
+}
+
+
+.save-button {
+    font-weight: bold;
+    background-color: black;
+    border: 2px solid white;
+    color: white;
+    padding: 10px;
+    border-radius: 10px;
+    margin: 5px;
+    cursor: pointer;
+}
+
+.save-button a {
+    color: white;
+    text-decoration: none;
+}
+
+.save-button:hover {
+    border: 2px solid black;
+    background-color: white;
+    color: black;
+    scale: 1.1;
+    transition: 0.5s;
+}
+
+.save-button:hover a {
+    color: black;
+    text-decoration: none;
 }
 </style>
     
