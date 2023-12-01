@@ -6,22 +6,30 @@
         <h1>Personal Record</h1>
         <p>Registra tus mejores marcas, pesos y repeticiones!</p>
       </div>
-      <div v-for="record in personalRecords" :key="record.personalRecordId" class="record">
-        <div v-if="editingRecordId !== record.personalRecordId">
-          <p>- Peso: {{ record.weight }} kg; Repeticiones: {{ record.repetitions }}; Ejercicio: {{ record.exerciseName }}; Registrado el: {{ record.date }}
-          </p>
-          <button @click="startEditing(record)">Editar</button>
-        </div>
-        <div v-else>
-          <input v-model="editedRecord.weight" type="number" placeholder="Peso">
-          <input v-model="editedRecord.repetitions" type="number" placeholder="Repeticiones">
-          <select v-model="editedRecord.exerciseName">
-            <option v-for="exercise in exerciseList" :key="exercise.name" :value="exercise.name">
-              {{ exercise.name }}
-            </option>
-          </select>
-          <button class="save-button" @click="updateRecord">GUARDAR</button>
-          <button class="save-button" @click="cancelEditing">Cancelar</button>
+      <div class="contenido-records">
+        <div v-for="record in personalRecords" :key="record.personalRecordId" class="record">
+          <div v-if="editingRecordId !== record.personalRecordId">
+            <p><b>• Peso:</b> {{ record.weight }} kg<br><b>• Repeticiones:</b> {{ record.repetitions }}<br><b>•
+                Ejercicio:</b> {{ record.exerciseName }}<br><b>• Registrado el:</b> {{ record.date }}
+            </p>
+            <button class="save-button" @click="startEditing(record)">Editar</button>
+          </div>
+          <div v-else class="form-record">
+            <label for="peso">Peso:</label>
+            <input v-model="editedRecord.weight" type="number" placeholder="Peso">
+            <label for="reps">Repeticiones:</label>
+            <input v-model="editedRecord.repetitions" type="number" placeholder="Repeticiones">
+            <label for="exercise">Ejercicio:</label>
+            <select v-model="editedRecord.exerciseName">
+              <option v-for="exercise in exerciseList" :key="exercise.name" :value="exercise.name">
+                {{ exercise.name }}
+              </option>
+            </select>
+            <div class="save-data">
+              <button class="save-button" @click="updateRecord">GUARDAR</button>
+              <button class="save-button" @click="cancelEditing">CANCELAR</button>
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -272,6 +280,19 @@ export default {
 .save-button:hover a {
   color: black;
   text-decoration: none;
+}
+
+.record {
+  margin: 10px;
+  padding: 10px;
+  border-radius: 10px;
+  border: 1px solid #ccc;
+  background-color: rgba(213, 217, 220, 0.642);
+}
+
+.contenido-records {
+  overflow: auto;
+  height: 75%;
 }
 </style>
     
